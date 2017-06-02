@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">MediaTest</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="audio_send">音频发送</string>
+    <string name="audio_recv">音频接收</string>
+    <string name="remote_addr">请输入远程地址</string>
+    <string name="audio_stop">停止</string>
+    <string name="audio_sending">发送中</string>
+    <string name="audio_recving">接收中</string>
+    <string name="video_test">视频测试</string>
+    <string name="video">视频</string>
+
+</resources>
