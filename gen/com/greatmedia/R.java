@@ -32,24 +32,39 @@ public final class R {
         public static final int textselector=0x7f020001;
     }
     public static final class id {
-        public static final int action_settings=0x7f09000d;
+        public static final int TestSpinner=0x7f09000d;
+        public static final int action_settings=0x7f090017;
         public static final int addrlayout=0x7f090002;
+        public static final int btnAudioAll=0x7f09000b;
         public static final int btnAudioRecv=0x7f090008;
         public static final int btnAudioSend=0x7f090005;
-        public static final int btnVideo=0x7f09000b;
-        public static final int image_view=0x7f090001;
+        public static final int btnLocalVideo=0x7f090015;
+        public static final int btnVideoDecode=0x7f090013;
+        public static final int btnVideoEncode=0x7f090011;
+        public static final int decodelayout=0x7f090012;
+        public static final int encodelayout=0x7f090010;
+        public static final int fileTip=0x7f090016;
+        public static final int locallayout=0x7f090014;
         public static final int recvTip=0x7f090009;
         public static final int recvlayout=0x7f090007;
         public static final int remoteAddr=0x7f090003;
         public static final int sendTip=0x7f090006;
         public static final int sendlayout=0x7f090004;
         public static final int sfv_video=0x7f090000;
+        public static final int startButton=0x7f09000e;
+        public static final int stopButton=0x7f09000f;
+        public static final int surfaceViewPlay=0x7f090001;
         public static final int videoTip=0x7f09000c;
         public static final int videolayout=0x7f09000a;
     }
     public static final class layout {
         public static final int activity_decode=0x7f030000;
-        public static final int activity_main=0x7f030001;
+        public static final int activity_encode=0x7f030001;
+        public static final int activity_main=0x7f030002;
+        public static final int menuaudio=0x7f030003;
+        public static final int menuopensl=0x7f030004;
+        public static final int menuvideojava=0x7f030005;
+        public static final int menuvideonative=0x7f030006;
     }
     public static final class menu {
         public static final int main=0x7f080000;
@@ -57,6 +72,7 @@ public final class R {
     public static final class string {
         public static final int action_settings=0x7f060002;
         public static final int app_name=0x7f060000;
+        public static final int audio=0x7f06000d;
         public static final int audio_recv=0x7f060004;
         public static final int audio_recving=0x7f060008;
         public static final int audio_send=0x7f060003;
@@ -65,6 +81,8 @@ public final class R {
         public static final int hello_world=0x7f060001;
         public static final int remote_addr=0x7f060005;
         public static final int video=0x7f06000a;
+        public static final int video_decode=0x7f06000c;
+        public static final int video_encode=0x7f06000b;
         public static final int video_test=0x7f060009;
     }
     public static final class style {

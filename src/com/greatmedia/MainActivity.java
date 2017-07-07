@@ -1,9 +1,15 @@
 package com.greatmedia;
 
+
 import com.greatmedia.audio.AudioWorker;
 import com.greatmedia.audio.Setting;
 
+import android.app.ActionBar;
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
+import android.app.ActionBar.Tab;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -17,54 +23,101 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class MainActivity extends Activity  implements OnClickListener, TextWatcher
+public class MainActivity extends Activity  implements OnClickListener
 {
 	
-	private Button btnAudioSend = null;
-	private Button btnAudioRecv = null;
-	private Button btnVideo		= null;
-	private EditText remoteAddr = null;
-	private TextView sendTip = null, recvTip = null;
+	public static Context contx;
 	
-	Setting mDataSetting = new Setting();
-	AudioWorker mAudio   = new AudioWorker();
-	
-	private String mPreAddress  = "192.168.0.";
-	private String mRemoteAddr  = "";
-	private short mSendPort = 1300, mRecvPort = 1200;
-	private boolean mSending = false, mRecving = false;
-	
+	private String TAG = "MainActivity";
 
+	  // From http://developer.android.com/guide/topics/ui/actionbar.html
+	  public static class TabListener<T extends Fragment> implements ActionBar.TabListener 
+	  {
+	    private Fragment fragment;
+	    private final Activity activity;
+	    private final String tag;
+	    private final Class<T> instance;
+	    private final Bundle args;
+
+	    public TabListener(Activity activity, String tag, Class<T> clz) {
+	      this(activity, tag, clz, null);
+	    }
+
+	    public TabListener(Activity activity, String tag, Class<T> clz,
+	        Bundle args) {
+	      this.activity = activity;
+	      this.tag = tag;
+	      this.instance = clz;
+	      this.args = args;
+	    }
+
+	    public void onTabSelected(Tab tab, FragmentTransaction ft) {
+	      // Check if the fragment is already initialized
+	      if (fragment == null) {
+	        // If not, instantiate and add it to the activity
+	        fragment = Fragment.instantiate(activity, instance.getName(), args);
+	        ft.add(android.R.id.content, fragment, tag);
+	      } else {
+	        // If it exists, simply attach it in order to show it
+	        ft.attach(fragment);
+	      }
+	    }
+
+	    public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+	      if (fragment != null) {
+	        // Detach the fragment, because another one is being attached
+	        ft.detach(fragment);
+	      }
+	    }
+
+	    public void onTabReselected(Tab tab, FragmentTransaction ft) {
+	      // User selected the already selected tab. Do nothing.
+	    }
+	}
+	  
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		contx = this;
+		initWidgets(); 
 		
-		initWidgets();  
-		
-		mDataSetting.setClickSound(this, false);
-		mAudio.setSoundCardMode(true);
 		
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 	}
 	
 	private void initWidgets()
 	{
-		btnAudioSend = (Button)findViewById(R.id.btnAudioSend);
-		btnAudioRecv = (Button)findViewById(R.id.btnAudioRecv);
-		btnVideo 	 = (Button)findViewById(R.id.btnVideo);
-		remoteAddr	 = (EditText)findViewById(R.id.remoteAddr);
-		sendTip	 	 = (TextView)findViewById(R.id.sendTip);
-		recvTip	 	 = (TextView)findViewById(R.id.recvTip);
-		
+	    // Create action bar with all tabs.
+	    ActionBar actionBar = getActionBar();
+	    actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+	    actionBar.setDisplayShowTitleEnabled(false);
 
-	    remoteAddr.setText("" + mDataSetting.readData(this, 0));
-		
-		btnAudioSend.setOnClickListener(this);
-		btnAudioRecv.setOnClickListener(this);
-		btnVideo.setOnClickListener(this);
-		remoteAddr.addTextChangedListener(this);
+	    Tab tab = actionBar.newTab()
+	        .setText("Audio")
+	        .setTabListener(new TabListener<FragmentAudioAlsa>(
+	            this, "audio", FragmentAudioAlsa.class));
+	    actionBar.addTab(tab);
+
+	    tab = actionBar.newTab()
+	        .setText("OpenslAudio")
+	        .setTabListener(new TabListener<FragmentAudioOpensl>(
+	            this, "OpenslAudio", FragmentAudioOpensl.class));
+	    actionBar.addTab(tab);
+
+	    tab = actionBar.newTab()
+	        .setText("Video")
+	        .setTabListener(new TabListener<FragmentVideoJava>(
+	            this, "Video", FragmentVideoJava.class));
+	    actionBar.addTab(tab);
+
+	    tab = actionBar.newTab()
+	        .setText("NativeVideo")
+	        .setTabListener(new TabListener<FragmentVideoNative>(
+	            this, "NativeVideo", FragmentVideoNative.class));
+	    actionBar.addTab(tab);
 	}
 
 	@Override
@@ -72,85 +125,9 @@ public class MainActivity extends Activity  implements OnClickListener, TextWatc
 	{
 		switch(v.getId())
 		{ 
-			case R.id.btnAudioSend:
-				if(mSending)
-				{
-					mAudio.AudioStopSend();
-					mAudio.AudioFinishSend();
-					
-					mSending = false;
-					sendTip.setText(getResources().getString(R.string.audio_stop));
-					sendTip.setTextColor(Color.RED);
-					
-					Log.e("MainActivity", "btnAudioSend stop...." );
-				}
-				else
-				{
-					mRemoteAddr = mPreAddress + mDataSetting.readData(this, 0);
-					
-					mAudio.AudioCreateSend(mSendPort);
-					mAudio.AudioConnectDest(mRemoteAddr.trim(), mRecvPort);
-					mAudio.AudioStartSend(1);
-					mSending = true;
-					sendTip.setText(getResources().getString(R.string.audio_sending));
-					sendTip.setTextColor(Color.GREEN);
-					
-					Log.e("MainActivity", "mRemoteAddr: " + mRemoteAddr );
-					Log.e("MainActivity", "btnAudioSend start...." );
-				}
-
-				break;
-				
-			case R.id.btnAudioRecv:
-				if(mRecving)
-				{
-					mAudio.AudioStopRecv();
-					mAudio.AudioFinishRecv();
-					mRecving = false;
-					recvTip.setText(getResources().getString(R.string.audio_stop));
-					recvTip.setTextColor(Color.RED);
-					
-					Log.e("MainActivity", "btnAudioRecv stop...." );
-				}
-				else
-				{
-					mAudio.AudioCreateRecv(mRecvPort);
-					mAudio.AudioStartRecv(1);
-					mRecving = true;
-					recvTip.setText(getResources().getString(R.string.audio_recving));
-					recvTip.setTextColor(Color.GREEN);
-					
-					Log.e("MainActivity", "btnAudioRecv start...." );
-				}
-				break;
-				
-				
-			case R.id.btnVideo:
-				startActivity(new Intent().setClass(MainActivity.this, NativeDecodeActivity.class));
-				break;
 		}
 	}
 
-	@Override
-	public void beforeTextChanged(CharSequence s, int start, int count, int after) 
-	{
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void onTextChanged(CharSequence s, int start, int before, int count) 
-	{
-		// TODO Auto-generated method stub
-		Log.e("MainActivity", "emoteAddr: " + remoteAddr.getText().toString() );
-		String addr = remoteAddr.getText().toString();
-		mDataSetting.InsertOrUpdate(this, 0, addr);
-	}
-
-	@Override
-	public void afterTextChanged(Editable s) 
-	{
-	}
-	
 	@Override
 	protected void onStart()
 	{
@@ -160,9 +137,6 @@ public class MainActivity extends Activity  implements OnClickListener, TextWatc
 	@Override
 	protected void onDestroy() 
 	{
-		mAudio.setSoundCardMode(false);
-		mAudio.deInitSoundCard();
-		mDataSetting.setClickSound(this, true);
 		super.onDestroy();
 	}
 	

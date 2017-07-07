@@ -12,10 +12,15 @@ import android.view.Surface;
 public class CodecMedia 
 {
 	
+	public CodecMedia()
+	{
+		
+	}
+	
     public static CodecMedia createDecoderByType(String type) 
     {
         return new CodecMedia(type, true /* nameIsType */, false /* encoder */);
-    } 
+    }
 
     /**
      * Instantiate an encoder supporting output data of the given mime type.
@@ -39,13 +44,13 @@ public class CodecMedia
 
     private CodecMedia(String name, boolean nameIsType, boolean encoder) 
     {
-        native_setup(name, nameIsType, encoder);
+        //native_setup(name, nameIsType, encoder);
     }
 
     @Override
     protected void finalize() 
     {
-    	release();
+    	//release();
     }
 	
     public void configure( String[] keys, Object[] values, Surface surface, MediaCrypto crypto, int flags) 
@@ -53,21 +58,7 @@ public class CodecMedia
         native_configure(keys, values, surface, crypto, flags);
     }
     
-    /**
-     * Call this after start() returns.
-     */
-    public ByteBuffer[] getInputBuffers() {
-        return getBuffers(true /* input */);
-    }
 
-    /**
-     * Call this after start() returns and whenever dequeueOutputBuffer
-     * signals an output buffer change by returning
-     * {@link #INFO_OUTPUT_BUFFERS_CHANGED}
-     */
-    public ByteBuffer[] getOutputBuffers() {
-        return getBuffers(false /* input */);
-    }
     
     
 	static
@@ -76,9 +67,9 @@ public class CodecMedia
 		{
 			Log.e("..", "----------------2");
 			System.loadLibrary("stlport");
+			System.loadLibrary("CodecBase");
 			System.loadLibrary("great_media");
-			
-			native_init();
+
 			Log.e("..", "----------------2");
 		}
 		catch(Throwable e)
@@ -88,18 +79,26 @@ public class CodecMedia
 
 	}
 
-	
-	private static native final void native_init();
-	private native void native_setup(String name, boolean nameIsType, boolean encoder);
-	private native void release();
+
 	private native void native_configure( String[] keys, Object[] values, Surface surface, MediaCrypto crypto, int flags);
-	public native final void start();
-	public native final void stop();
-	public native final void flush();
-	public native final void startCodec(BufferInfo info);
-	private native ByteBuffer[] getBuffers( boolean input);
-	public native final int dequeueInputBuffer( long timeoutUs);
-	public native final void queueInputBuffer( int index, int offset, int size, long timestampUs, int flags);
-	public native final int dequeueOutputBuffer( BufferInfo info, long timeoutUs);
-	public native final void releaseOutputBuffer( int index, boolean render);
+	public native final void startCodec();
+
+	public native boolean StartVideoSend(String[] keys, Object[] values, Surface surface, MediaCrypto crypto, int flags, BufferInfo info);
+	public native boolean StopVideoSend();
+	
+	public native boolean StartFileDecoder(String[] keys, Object[] values, Surface surface, MediaCrypto crypto, int flags);
+	public native boolean StopFileDecoder();
+	
+	/*
+	public native final boolean StartVideoSend(String[] keys, Object[] values, Surface surface, MediaCrypto crypto, String remoteIp, int flags, short localSendPort, short remotePort);
+	public native final boolean StopVideoSend();
+	
+	public native final boolean StartVideoRecv(String[] keys, Object[] values, Surface surface, MediaCrypto crypto, int flags, short localRecvPort);
+	public native final boolean StopVideoRecv();
+	
+	public native final boolean StartVideoFilePlay(String[] keys, Object[] values, Surface surface, MediaCrypto crypto, int flags);
+	public native final boolean StopVideoFilePlay();
+	*/
 }
+
+
