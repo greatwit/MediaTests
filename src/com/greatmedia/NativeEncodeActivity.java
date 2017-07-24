@@ -2,6 +2,7 @@
 package com.greatmedia;
 
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,30 +11,54 @@ import com.great.happyness.Codec.CodecMedia;
 
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
-
+import android.content.Intent;
+import android.graphics.ImageFormat;
+import android.hardware.Camera;
+import android.hardware.Camera.Parameters;
+import android.hardware.Camera.PreviewCallback;
+import android.media.MediaCodec;
+import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Surface;
+
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.WindowManager;
+import android.widget.Button;
 
-public class NativeEncodeActivity extends Activity implements SurfaceHolder.Callback 
+
+@SuppressWarnings("deprecation")
+@SuppressLint("UseValueOf")
+public class NativeEncodeActivity extends Activity implements SurfaceHolder.Callback ,PreviewCallback, OnClickListener
 {
+	private String TAG = NativeEncodeActivity.class.getSimpleName();
+	
 	private final int width = 1280;
 	private final int height = 720;
 	
 	private static String fileString = "/sdcard/camera.h264";
-	private PlayerThread mPlayer = null;
-	private SurfaceHolder holder = null;
+	private SurfaceHolder mHolder = null;
 	
-	final String KEY_MIME = "mime";
+	private Button btEncodecStart		= null;
+	
+	final String KEY_MIME  = "mime";
     final String KEY_WIDTH = "width";
     final String KEY_HEIGHT = "height";
 	
     private CodecMedia mCodecMedia  	=  new CodecMedia();
+    String[] keys 	= null;
+    Object[] values = null; 
+    
+    private Camera mCamera;
+    private Parameters parameters;
+    
+    int mFrameCount = 0;
     
 	@SuppressLint("NewApi")
 	@Override
@@ -42,19 +67,43 @@ public class NativeEncodeActivity extends Activity implements SurfaceHolder.Call
 		super.onCreate(savedInstanceState);
 		
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-		setContentView(R.layout.activity_decode);
+		setContentView(R.layout.activity_native_encode);
 		SurfaceView sfv_video = (SurfaceView) findViewById(R.id.sfv_video);
+		mHolder = sfv_video.getHolder();
+		mHolder.addCallback(this);
+		
+		btEncodecStart	 = (Button)findViewById(R.id.btEncodecStart);
+		btEncodecStart.setOnClickListener(this);
+		
+		
+		
+		Map<String, Object> mMap = new HashMap();
+		mMap.put(KEY_MIME, "video/avc");
+		mMap.put(KEY_WIDTH, new Integer(width));
+		mMap.put(KEY_HEIGHT, new Integer(height));
+		mMap.put(MediaFormat.KEY_COLOR_FORMAT, new Integer(MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420SemiPlanar)); 
+		mMap.put(MediaFormat.KEY_BIT_RATE, new Integer(width*height*5));
+		mMap.put(MediaFormat.KEY_FRAME_RATE, new Integer(20));
+		mMap.put(MediaFormat.KEY_I_FRAME_INTERVAL, new Integer(1));
+		
+		
 
-		holder = sfv_video.getHolder();
-		holder.addCallback(this);
-		
-		
-		
-		MediaFormat mediaFormat = MediaFormat.createVideoFormat("video/avc", width, height);
-		mediaFormat.setInteger(MediaFormat.KEY_BIT_RATE, 2500000);
-		mediaFormat.setInteger(MediaFormat.KEY_FRAME_RATE, 20);
-		
-		//Map<String, Object> formatMap = mediaFormat.getMap();
+
+
+        keys = new String[mMap.size()];
+        values = new Object[mMap.size()];
+
+        int i = 0;
+        for (Map.Entry<String, Object> entry: mMap.entrySet()) 
+        {
+            keys[i] = entry.getKey();
+            values[i] = entry.getValue();
+            ++i;
+        } 
+        
+        Log.e("native", "=========size 1:"+mMap.size());
+
+        
 	}
 
 	class BufferInfo 
@@ -73,106 +122,14 @@ public class NativeEncodeActivity extends Activity implements SurfaceHolder.Call
         public int flags;
     };
 	
-	private class PlayerThread extends Thread 
-	{
-		private CodecMedia decoder  	=  new CodecMedia();
-		private Surface surface = null;
-		private SurfaceHolder surfaceHolder = null;
-
-		public PlayerThread( Surface surface, SurfaceHolder surfaceHolder) 
-		{
-			this.surface = surface;
-			this.surfaceHolder = surfaceHolder;
-		}
-
-		@SuppressLint("NewApi")
-		@Override
-		public void run() 
-		{
-			Map<String, Object> mMap = new HashMap();
-			mMap.put(KEY_MIME, "video/avc");
-			mMap.put(KEY_WIDTH, new Integer(width));
-			mMap.put(KEY_HEIGHT, new Integer(height));
-			mMap.put(MediaFormat.KEY_BIT_RATE, new Integer(2500000));
-			mMap.put(MediaFormat.KEY_FRAME_RATE, new Integer(20));
-			
-	        String[] keys = null;
-	        Object[] values = null;
-
-
-	        keys = new String[mMap.size()];
-	        values = new Object[mMap.size()];
-
-	        int i = 0;
-	        for (Map.Entry<String, Object> entry: mMap.entrySet()) 
-	        {
-	            keys[i] = entry.getKey();
-	            values[i] = entry.getValue();
-	            ++i;
-	        }
-	        
-	        Log.e("native", "=========size:"+mMap.size());
-
-	        
-	        
-			
-			decoder.configure(keys, values, surface, null, 0);  
-			Log.e("native", "-------------------------3");
-			decoder.startCodec();
-			
-			Log.d("native", "----------------------------Finish");
-		}// end of run
-
-
-		
-		public int bytesToInt(byte[] src, int offset) 
-		{  
-		    int value;    
-		    value = (int) ((src[offset] & 0xFF)   
-		            | ((src[offset+1] & 0xFF)<<8)   
-		            | ((src[offset+2] & 0xFF)<<16)   
-		            | ((src[offset+3] & 0xFF)<<24));  
-		    return value;  
-		} 
-		
-	}// end of class
-	
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) 
 	{
 		// TODO Auto-generated method stub
-		/*
-		if (mPlayer == null) 
-		{
-			mPlayer = new PlayerThread( holder.getSurface(), holder);
-			mPlayer.start();
-		}
-		*/
-		Map<String, Object> mMap = new HashMap();
-		mMap.put(KEY_MIME, "video/avc");
-		mMap.put(KEY_WIDTH, new Integer(width));
-		mMap.put(KEY_HEIGHT, new Integer(height));
-		mMap.put(MediaFormat.KEY_BIT_RATE, new Integer(2500000));
-		mMap.put(MediaFormat.KEY_FRAME_RATE, new Integer(20));
-		
-        String[] keys = null;
-        Object[] values = null;
-
-
-        keys = new String[mMap.size()];
-        values = new Object[mMap.size()];
-
-        int i = 0;
-        for (Map.Entry<String, Object> entry: mMap.entrySet()) 
-        {
-            keys[i] = entry.getKey();
-            values[i] = entry.getValue();
-            ++i;
-        } 
+        mCodecMedia.StartFileEncoder(keys, values, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
         
-        Log.e("native", "=========size:"+mMap.size());
-		//mCodecMedia.StartVideoSend(keys, values, holder.getSurface(), null, 0, null);
-        mCodecMedia.StartFileDecoder(keys, values, holder.getSurface(), null, 0);
+        mCamera = getBackCamera();
+        startcamera(mCamera);
 	}
 
 	@Override
@@ -186,9 +143,79 @@ public class NativeEncodeActivity extends Activity implements SurfaceHolder.Call
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		// TODO Auto-generated method stub
 		//mCodecMedia.StopVideoSend();
-		mCodecMedia.StopFileDecoder();
+		
+        if (null != mCamera) 
+        {
+        	mCamera.setPreviewCallback(null);
+        	mCamera.stopPreview();
+        	mCamera.release();
+        	mCamera = null;
+        }
+		
+		mCodecMedia.StopFileEncoder();
 	}
 
+    private void startcamera(Camera camera)
+    {
+        if(camera != null)
+        {
+            try {
+            	camera.setPreviewCallback(this);
+            	camera.setDisplayOrientation(90);
+                if(parameters == null)
+                {
+                    parameters = camera.getParameters();
+                }
+                parameters = camera.getParameters();
+                parameters.setPreviewFormat(ImageFormat.NV21);
+                parameters.setPreviewSize(width, height);
+                camera.setParameters(parameters);
+                camera.setPreviewDisplay(mHolder);
+                camera.startPreview();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+	private Camera getBackCamera() 
+	{
+        Camera c = null;
+        try 
+        {
+            c = Camera.open(0); // attempt to get a Camera instance
+        } 
+        catch (Exception e) 
+        {
+            e.printStackTrace();
+        }
+        return c; // returns null if camera is unavailable
+    }
+
+	@Override
+	public void onPreviewFrame(byte[] data, Camera camera) {
+		// TODO Auto-generated method stub
+		Log.e(TAG, "camera data:" + data.length);
+		
+
+			
+		mCodecMedia.AddEncoderData(data, data.length);
+	}
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		switch(v.getId())
+		{
+		
+		    case R.id.btEncodecStart:
+		        mCamera = getBackCamera();
+		        startcamera(mCamera);
+				break;
+		}
+	}
+	
 }
 
 

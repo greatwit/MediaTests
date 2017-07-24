@@ -6,7 +6,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 import com.great.happyness.Codec.AvcEncoder;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.graphics.ImageFormat;
 import android.hardware.Camera;
@@ -20,9 +19,11 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+@SuppressWarnings("deprecation")
 public class EncodeActivity extends Activity  implements SurfaceHolder.Callback,PreviewCallback
 {
-
+	private String TAG = EncodeActivity.class.getSimpleName();
+	
 	private SurfaceView surfaceview;
 	
     private SurfaceHolder surfaceHolder;
@@ -32,11 +33,8 @@ public class EncodeActivity extends Activity  implements SurfaceHolder.Callback,
     private Parameters parameters;
     
     int width = 1280;
-    
     int height = 720;
-    
-    int framerate = 30;
-    
+    int framerate = 20;
     int biterate = 8500*1000;
     
     private static int yuvqueuesize = 10;
@@ -62,7 +60,7 @@ public class EncodeActivity extends Activity  implements SurfaceHolder.Callback,
     public void surfaceCreated(SurfaceHolder holder) {
         camera = getBackCamera();
         startcamera(camera);
-		avcCodec = new AvcEncoder(width,height,framerate,biterate);
+		avcCodec = new AvcEncoder(width, height, framerate, biterate);
 		avcCodec.StartEncoderThread();
     }
 
@@ -72,8 +70,10 @@ public class EncodeActivity extends Activity  implements SurfaceHolder.Callback,
     }
 
     @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
-        if (null != camera) {
+    public void surfaceDestroyed(SurfaceHolder holder) 
+    {
+        if (null != camera) 
+        {
         	camera.setPreviewCallback(null);
         	camera.stopPreview();
             camera.release();
@@ -100,6 +100,8 @@ public class EncodeActivity extends Activity  implements SurfaceHolder.Callback,
 	@SuppressLint("NewApi")
 	private boolean SupportAvcCodec()
 	{
+		boolean bSupport = false;
+		Log.e(TAG, "mediacodec build version:" + Build.VERSION.SDK_INT + " codecCount:" + MediaCodecList.getCodecCount());
 		if(Build.VERSION.SDK_INT>=18)
 		{
 			for(int j = MediaCodecList.getCodecCount() - 1; j >= 0; j--)
@@ -107,25 +109,30 @@ public class EncodeActivity extends Activity  implements SurfaceHolder.Callback,
 				MediaCodecInfo codecInfo = MediaCodecList.getCodecInfoAt(j);
 	
 				String[] types = codecInfo.getSupportedTypes();
+				
 				for (int i = 0; i < types.length; i++) 
 				{
+					Log.e(TAG, "mediacodec SupportedTypes:" + types[i]);
 					if (types[i].equalsIgnoreCase("video/avc")) 
 					{
-						return true;
+						bSupport = true;
 					}
 				}
 			}
 		}
-		return false;
+		return bSupport;
 	}
 	
 
-    private void startcamera(Camera mCamera){
-        if(mCamera != null){
+    private void startcamera(Camera mCamera)
+    {
+        if(mCamera != null)
+        {
             try {
                 mCamera.setPreviewCallback(this);
                 mCamera.setDisplayOrientation(90);
-                if(parameters == null){
+                if(parameters == null)
+                {
                     parameters = mCamera.getParameters();
                 }
                 parameters = mCamera.getParameters();
@@ -141,12 +148,15 @@ public class EncodeActivity extends Activity  implements SurfaceHolder.Callback,
         }
     }
 
-    @TargetApi(9)
-	private Camera getBackCamera() {
+	private Camera getBackCamera() 
+	{
         Camera c = null;
-        try {
+        try 
+        {
             c = Camera.open(0); // attempt to get a Camera instance
-        } catch (Exception e) {
+        } 
+        catch (Exception e) 
+        {
             e.printStackTrace();
         }
         return c; // returns null if camera is unavailable

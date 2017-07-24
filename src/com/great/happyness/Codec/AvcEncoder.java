@@ -42,9 +42,14 @@ public class AvcEncoder
 	    MediaFormat mediaFormat = MediaFormat.createVideoFormat("video/avc", width, height);
 	    mediaFormat.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420SemiPlanar);    
 	    mediaFormat.setInteger(MediaFormat.KEY_BIT_RATE, width*height*5);
-	    mediaFormat.setInteger(MediaFormat.KEY_FRAME_RATE, 30);
+	    mediaFormat.setInteger(MediaFormat.KEY_FRAME_RATE, m_framerate);
 	    mediaFormat.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 1);
-		mediaCodec = MediaCodec.createEncoderByType("video/avc");
+		try {
+			mediaCodec = MediaCodec.createEncoderByType("video/avc");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	    mediaCodec.configure(mediaFormat, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
 	    mediaCodec.start();
@@ -135,7 +140,7 @@ public class AvcEncoder
 						
 						try {
 							long startMs = System.currentTimeMillis();
-							Log.e(TAG, "dequeueInputBuffer ---------------------------11" + EncodeActivity.YUVQueue.size());
+							Log.e(TAG, "dequeueInputBuffer ---------------------------11 " + EncodeActivity.YUVQueue.size());
 							int inputBufferIndex = mediaCodec.dequeueInputBuffer(-1);
 							Log.e(TAG, "dequeueInputBuffer--------------------------- 12 " + inputBufferIndex);
 							if (inputBufferIndex >= 0) 
@@ -144,7 +149,7 @@ public class AvcEncoder
 								ByteBuffer inputBuffer = inputBuffers[inputBufferIndex];
 								inputBuffer.clear();
 								inputBuffer.put(input);
-								mediaCodec.queueInputBuffer(inputBufferIndex, 0, input.length, pts, 0);
+								mediaCodec.queueInputBuffer(inputBufferIndex, 0, input.length, 0, 0);
 								generateIndex += 1;
 							}
 							
@@ -174,10 +179,10 @@ public class AvcEncoder
 								{
 									outputStream.write(outData, 0, outData.length);
 								}
-
+								Log.e(TAG, " -- 2 " + outputBufferIndex + " flags:"+bufferInfo.flags + " size:"+bufferInfo.size);
 								mediaCodec.releaseOutputBuffer(outputBufferIndex, false);
 								outputBufferIndex = mediaCodec.dequeueOutputBuffer(bufferInfo, TIMEOUT_USEC);
-								Log.e(TAG, " --------------------------- 2 " + outputBufferIndex);
+								
 							}
 
 						} 

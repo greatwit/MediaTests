@@ -41,8 +41,8 @@ public class AudioWorker
 		AudioCreateRecv(destPort);
 		AudioStartRecv(devCardid);
 		*/
-		StartAudioTalk(destAddr, destPort, localPort, devCardid);
-		//StartAudio(destAddr, destPort, localPort);
+		//StartAudioTalk(destAddr, destPort, localPort, devCardid);
+		StartAudio(destAddr, destPort, localPort);
 		return true;
 	}
 	
@@ -60,8 +60,8 @@ public class AudioWorker
 		AudioStopSend();
 		AudioFinishSend();
 		*/
-		StopAudioTalk();
-		//StopAudio();
+		//StopAudioTalk();
+		StopAudio();
 		return true;
 	}
 	

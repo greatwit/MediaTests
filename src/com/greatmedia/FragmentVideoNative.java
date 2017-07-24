@@ -19,8 +19,7 @@ import com.greatmedia.audio.Setting;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
-import android.media.MediaCodec;
-import android.media.MediaCodecInfo;
+import android.content.Intent;
 import android.media.MediaFormat;
 import android.os.Bundle;
 import android.util.Log;
@@ -37,10 +36,10 @@ import android.widget.Button;
 public class FragmentVideoNative extends Fragment implements SurfaceHolder.Callback, OnClickListener
 {
   private String TAG;
-  private Button btnVideoEncode		= null, btnVideoDecode = null, btnLocalVideo = null;
-  private boolean mbEncoding        = false, mbDecoding = false, mbFilePlaying = false;
+  private Button btnVideoEncode		= null, btnVideoDecode = null, btnSendEncode = null;
+  //private boolean mbEncoding        = false, mbDecoding = false, mbFilePlaying = false;
   
-  private CodecMedia mDecoder  		= null;
+
   Setting mDataSetting = new Setting();
   private SurfaceHolder holder = null;
   
@@ -60,11 +59,12 @@ public class FragmentVideoNative extends Fragment implements SurfaceHolder.Callb
     View v = inflater.inflate(R.layout.menuvideonative, container, false);
     btnVideoEncode 	 = (Button)v.findViewById(R.id.btnVideoEncode);
     btnVideoDecode	 = (Button)v.findViewById(R.id.btnVideoDecode);
-    btnLocalVideo	 = (Button)v.findViewById(R.id.btnLocalVideo);
+    btnSendEncode	 = (Button)v.findViewById(R.id.btnSendEncode);
     btnVideoEncode.setOnClickListener(this);
     btnVideoDecode.setOnClickListener(this);
-    btnLocalVideo.setOnClickListener(this);
+    btnSendEncode.setOnClickListener(this);
     
+    /*
     mDecoder  	= new CodecMedia();
     
 
@@ -97,7 +97,7 @@ public class FragmentVideoNative extends Fragment implements SurfaceHolder.Callb
 
 	holder = sfv_video.getHolder();
 	holder.addCallback(this);
-    
+    */
     return v;
   }
 
@@ -112,53 +112,19 @@ public void onClick(View v) {
 	// TODO Auto-generated method stub
 	switch(v.getId())
 	{
-	/*
+	
 	    case R.id.btnVideoEncode:
-	    	if(mbEncoding)
-	    	{ 
-	    		mDecoder.StopVideoSend();
-	    		mbEncoding = false;
-	    	}else
-	    	{
-	    		//mDecoder.StartVideoSend(mKeys, mValues, holder.getSurface(), null, "192.168.0."+mDataSetting.readData(MainActivity.contx, 0), MediaCodec.CONFIGURE_FLAG_ENCODE, (short)2300, (short)2200);
-	    		Thread EncoderThread = new Thread(new Runnable() 
-	    		{
-	    			@SuppressLint("NewApi")
-	    			@Override
-	    			public void run() 
-	    			{
-	    				mDecoder.StartVideoSend(mKeys, mValues, holder.getSurface(), null, "192.168.0."+mDataSetting.readData(MainActivity.contx, 0), MediaCodec.CONFIGURE_FLAG_ENCODE, (short)2300, (short)2200);
-	    			}
-	    		});
-	    		EncoderThread.start();
-	    		mbEncoding = true;
-	    	}
+	    	startActivity(new Intent().setClass(MainActivity.contx, NativeEncodeActivity.class));
 			break;
 			
 	    case R.id.btnVideoDecode:
-	    	if(mbDecoding)
-	    	{
-	    		mbDecoding = false;
-	    	}else
-	    	{
-	    		mDecoder.StartVideoRecv(mKeys, mValues, holder.getSurface(), null, 0, (short)2200);
-	    		mbDecoding = true;
-	    	}
+	    	startActivity(new Intent().setClass(MainActivity.contx, NativeDecodeActivity.class));
 	    	break;
     	
-	    case R.id.btnLocalVideo:
-	    	if(mbFilePlaying)
-	    	{
-	    		mDecoder.StopVideoFilePlay();
-	    		mbFilePlaying = false;
-	    	}
-	    	else
-	    	{
-	    		mDecoder.StartVideoFilePlay(mKeys, mValues, holder.getSurface(), null, 0);
-	    		mbFilePlaying = true;
-	    	}
+	    case R.id.btnSendEncode:
+	    	
 	    	break;
-	    	*/
+	    	
 	}
 }
 

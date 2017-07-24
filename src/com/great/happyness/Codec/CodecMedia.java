@@ -1,8 +1,6 @@
 package com.great.happyness.Codec;
 
-import java.nio.ByteBuffer;
 
-import android.media.MediaCodec.BufferInfo;
 import android.media.MediaCrypto;
 import android.util.Log;
 import android.view.Surface;
@@ -55,7 +53,7 @@ public class CodecMedia
 	
     public void configure( String[] keys, Object[] values, Surface surface, MediaCrypto crypto, int flags) 
     {
-        native_configure(keys, values, surface, crypto, flags);
+        //native_configure(keys, values, surface, crypto, flags);
     }
     
 
@@ -79,15 +77,26 @@ public class CodecMedia
 
 	}
 
-
+	/*
 	private native void native_configure( String[] keys, Object[] values, Surface surface, MediaCrypto crypto, int flags);
 	public native final void startCodec();
 
 	public native boolean StartVideoSend(String[] keys, Object[] values, Surface surface, MediaCrypto crypto, int flags, BufferInfo info);
 	public native boolean StopVideoSend();
-	
+	*/
 	public native boolean StartFileDecoder(String[] keys, Object[] values, Surface surface, MediaCrypto crypto, int flags);
 	public native boolean StopFileDecoder();
+	
+	public native boolean StartFileEncoder(String[] keys, Object[] values, Surface surface, MediaCrypto crypto, int flags);
+	public native boolean StopFileEncoder();
+	public native boolean AddEncoderData(byte[] data, int len);
+	
+	
+	public native boolean StartCodecSender(String[] keys, Object[] values, Surface surface, MediaCrypto crypto, String destip, short destport, short localport, int flags);
+	public native boolean StartCodecSender();
+	
+	public native boolean StartCodecRecver(String[] keys, Object[] values, Surface surface, MediaCrypto crypto, int flags, short recvport);
+	public native boolean StartCodecRecver();
 	
 	/*
 	public native final boolean StartVideoSend(String[] keys, Object[] values, Surface surface, MediaCrypto crypto, String remoteIp, int flags, short localSendPort, short remotePort);

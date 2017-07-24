@@ -119,7 +119,7 @@ public class NativeDecodeActivity extends Activity implements SurfaceHolder.Call
 			
 			decoder.configure(keys, values, surface, null, 0);  
 			Log.e("native", "-------------------------3");
-			decoder.startCodec();
+			//decoder.startCodec();
 			
 			Log.d("native", "----------------------------Finish");
 		}// end of run
