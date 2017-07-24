@@ -84,6 +84,28 @@ public class AudioWorker
 	public native boolean AudioStopSend();
 	public native boolean AudioConnectDest(String destip, short port);
 	
+	
+	
+	
+	public native boolean StartAllAlsa(String destip, short destPort, short localPort);
+	public native boolean StopAllAlsa();
+	 
+	public native boolean StartAlsaRecv(short recvPort);
+	public native boolean StopAlsaRecv();
+
+	public native boolean StartAlsaSend(short sendPort, String destip, short destPort);
+	public native boolean StopAlsaSend();
+
+
+	public native boolean StartAllOpensl(String destip, short destPort, short localPort);
+	public native boolean StopAllOpensl();
+	 
+	public native boolean StartOpenslRecv(short localPort);
+	public native boolean StopOpenslRecv();
+
+	public native boolean StartOpenslSend(String destip, short destPort, short localPort);
+	public native boolean StopOpenslSend();
+	
 }
 
 

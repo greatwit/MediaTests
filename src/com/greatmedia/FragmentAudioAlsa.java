@@ -64,6 +64,8 @@ public class FragmentAudioAlsa extends Fragment implements OnClickListener, Text
 	
 	mDataSetting.setClickSound(MainActivity.contx, false);
 	
+	mAudio.setSoundCardMode(true);
+	
     return v;
   }
 
@@ -77,8 +79,9 @@ public class FragmentAudioAlsa extends Fragment implements OnClickListener, Text
 				
 				if(mSending)
 				{
-					mAudio.AudioStopSend();
-					mAudio.AudioFinishSend();
+					mAudio.StopAlsaSend();
+					//mAudio.AudioStopSend();
+					//mAudio.AudioFinishSend();
 					
 					mSending = false;
 					sendTip.setText(getResources().getString(R.string.audio_stop));
@@ -90,10 +93,12 @@ public class FragmentAudioAlsa extends Fragment implements OnClickListener, Text
 				{
 					mRemoteAddr = mPreAddress + mDataSetting.readData(MainActivity.contx, 0);
 					
+					mAudio.StartAlsaSend(mSendPort, mRemoteAddr.trim(), mRecvPort);
+					/*
 					mAudio.AudioCreateSend(mSendPort);
 					mAudio.AudioConnectDest(mRemoteAddr.trim(), mRecvPort);
 					mAudio.AudioStartSend(1);
-					
+					*/
 					mSending = true;
 					sendTip.setText(getResources().getString(R.string.audio_sending));
 					sendTip.setTextColor(Color.GREEN);
@@ -107,8 +112,11 @@ public class FragmentAudioAlsa extends Fragment implements OnClickListener, Text
 			case R.id.btnAudioRecv:
 				if(mRecving)
 				{
+					mAudio.StopAlsaRecv();
+					/*
 					mAudio.AudioStopRecv();
 					mAudio.AudioFinishRecv();
+					*/
 					mRecving = false;
 					recvTip.setText(getResources().getString(R.string.audio_stop));
 					recvTip.setTextColor(Color.RED);
@@ -117,8 +125,11 @@ public class FragmentAudioAlsa extends Fragment implements OnClickListener, Text
 				}
 				else
 				{
+					mAudio.StartAlsaRecv(mRecvPort);
+					/*
 					mAudio.AudioCreateRecv(mRecvPort);
 					mAudio.AudioStartRecv(1);
+					*/
 					mRecving = true;
 					recvTip.setText(getResources().getString(R.string.audio_recving));
 					recvTip.setTextColor(Color.GREEN);
@@ -130,11 +141,13 @@ public class FragmentAudioAlsa extends Fragment implements OnClickListener, Text
 			case R.id.btnAudioAll:
 				if(mAllAudio)
 				{
+					mAudio.StopAllAlsa();
+					/*
 					mAudio.StopAudioWork();
 					
 					mAudio.setSoundCardMode(false);
 					mAudio.deInitSoundCard();
-					
+					*/
 					recvTip.setText(getResources().getString(R.string.audio_stop));
 					recvTip.setTextColor(Color.RED);
 					sendTip.setText(getResources().getString(R.string.audio_stop));
@@ -144,11 +157,13 @@ public class FragmentAudioAlsa extends Fragment implements OnClickListener, Text
 				}
 				else
 				{ 
+					mAudio.StartAllAlsa( mRemoteAddr.trim(), mRecvPort, mSendPort);
+					/*
 					mAudio.setSoundCardMode(true);
 					
 					mRemoteAddr = mPreAddress + mDataSetting.readData(MainActivity.contx, 0);
 					mAudio.StartAudioWork(mRemoteAddr.trim(), mRecvPort, mSendPort, 1);
-					
+					*/
 					sendTip.setText(getResources().getString(R.string.audio_sending));
 					sendTip.setTextColor(Color.GREEN);
 					
@@ -166,6 +181,8 @@ public class FragmentAudioAlsa extends Fragment implements OnClickListener, Text
 	@Override
 	public void onDestroy() 
 	{
+		mAudio.setSoundCardMode(false);
+		mAudio.deInitSoundCard();
 		mDataSetting.setClickSound(MainActivity.contx, true);
 		super.onDestroy();
 	}
