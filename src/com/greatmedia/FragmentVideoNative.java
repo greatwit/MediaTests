@@ -122,7 +122,7 @@ public void onClick(View v) {
 	    	break;
     	
 	    case R.id.btnSendEncode:
-	    	
+	    	startActivity(new Intent().setClass(MainActivity.contx, SendEncodeActivity.class));
 	    	break;
 	    	
 	}

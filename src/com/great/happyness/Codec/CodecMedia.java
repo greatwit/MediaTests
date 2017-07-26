@@ -2,6 +2,7 @@ package com.great.happyness.Codec;
 
 
 import android.media.MediaCrypto;
+import android.os.Build;
 import android.util.Log;
 import android.view.Surface;
 
@@ -9,6 +10,9 @@ import android.view.Surface;
 
 public class CodecMedia 
 {
+	
+	public static String mPreAddress  = "192.168.";
+	public static short mSendPort = 9000, mRecvPort = 8000;
 	
 	public CodecMedia()
 	{
@@ -57,15 +61,27 @@ public class CodecMedia
     }
     
 
-    
-    
 	static
 	{
+		Log.e("..", "----------------build version:"+Build.VERSION.SDK_INT);
 		try
 		{
-			Log.e("..", "----------------2");
+			switch(Build.VERSION.SDK_INT)
+			{
+				case Build.VERSION_CODES.JELLY_BEAN_MR1: //4.2, 4.2.2
+					System.loadLibrary("CodecBase4");
+					break;
+					
+				case Build.VERSION_CODES.LOLLIPOP: //5.0
+					break;
+					
+				case Build.VERSION_CODES.M: //android 6.0
+					System.loadLibrary("CodecBase6");
+					break;
+			}
+
+			
 			System.loadLibrary("stlport");
-			System.loadLibrary("CodecBase");
 			System.loadLibrary("great_media");
 
 			Log.e("..", "----------------2");
@@ -93,10 +109,11 @@ public class CodecMedia
 	
 	
 	public native boolean StartCodecSender(String[] keys, Object[] values, Surface surface, MediaCrypto crypto, String destip, short destport, short localport, int flags);
-	public native boolean StartCodecSender();
+	public native boolean CodecSenderData(byte[] data, int len);
+	public native boolean StopCodecSender();
 	
 	public native boolean StartCodecRecver(String[] keys, Object[] values, Surface surface, MediaCrypto crypto, int flags, short recvport);
-	public native boolean StartCodecRecver();
+	public native boolean StopCodecRecver();
 	
 	/*
 	public native final boolean StartVideoSend(String[] keys, Object[] values, Surface surface, MediaCrypto crypto, String remoteIp, int flags, short localSendPort, short remotePort);

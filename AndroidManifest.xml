@@ -28,6 +28,8 @@
         <activity android:name=".DecodeActivity" />
         <activity android:name=".NativeDecodeActivity" />
         <activity android:name=".NativeEncodeActivity" />
+        <activity android:name=".SendEncodeActivity" />
+        
 		
     </application>
 
