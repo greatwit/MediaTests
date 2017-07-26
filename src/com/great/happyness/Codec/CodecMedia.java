@@ -80,6 +80,11 @@ public class CodecMedia
 					System.loadLibrary("CodecBase6");
 					System.loadLibrary("great_media6");
 					break;
+					
+					default:
+						System.loadLibrary("CodecBase6");
+						System.loadLibrary("great_media6");
+						break;
 			}
 
 			System.loadLibrary("stlport");
