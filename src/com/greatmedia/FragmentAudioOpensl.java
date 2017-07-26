@@ -10,13 +10,17 @@
 
 package com.greatmedia;
 
+import com.greatmedia.audio.AudioWorker;
+import com.greatmedia.audio.Setting;
 import com.greatmedia.opensles.tester.CaptureTester;
 import com.greatmedia.opensles.tester.NativeAudioTester;
 import com.greatmedia.opensles.tester.PlayerTester;
 import com.greatmedia.opensles.tester.Tester;
 
 import android.app.Fragment;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +28,7 @@ import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -33,7 +38,16 @@ public class FragmentAudioOpensl extends Fragment implements OnClickListener
     private Spinner mTestSpinner;
     private Tester mTester;
     private Button startButton = null, stopButton = null;
-
+    private Button openslRecvButton = null, openslSendButton = null, openslAllButton = null;
+    private TextView sendTip = null, recvTip = null;
+    
+    AudioWorker mAudio   = new AudioWorker();
+	Setting mDataSetting = new Setting();
+	
+    private boolean mSending = false, mRecving = false, mAllAudio = false;
+    private String mRemoteAddr  = "";
+    
+    
     public static final String[] TEST_PROGRAM_ARRAY = {
             "录制wav文件", "播放wav文件", "Native录制pcm", "Native播放pcm"
     };
@@ -47,10 +61,21 @@ public class FragmentAudioOpensl extends Fragment implements OnClickListener
 	    ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.contx, android.R.layout.simple_list_item_1, TEST_PROGRAM_ARRAY);
 	    mTestSpinner.setAdapter(adapter);
 	    
+		sendTip	 	 = (TextView)v.findViewById(R.id.sendTip);
+		recvTip	 	 = (TextView)v.findViewById(R.id.recvTip);
+	    
 	    startButton = (Button)v.findViewById(R.id.startButton);
 	    stopButton	= (Button)v.findViewById(R.id.stopButton);
 	    startButton.setOnClickListener(this);
 	    stopButton.setOnClickListener(this);
+	    
+	    openslRecvButton = (Button)v.findViewById(R.id.openslRecvButton);
+	    openslSendButton = (Button)v.findViewById(R.id.openslSendButton);
+	    openslAllButton  = (Button)v.findViewById(R.id.openslAllButton);
+	    openslRecvButton.setOnClickListener(this);
+	    openslSendButton.setOnClickListener(this);
+	    openslAllButton.setOnClickListener(this);
+
 	    return v;
   }
 
@@ -90,6 +115,49 @@ public class FragmentAudioOpensl extends Fragment implements OnClickListener
 		            mTester.stopTesting();
 		            Toast.makeText(MainActivity.contx, "Stop Testing !", Toast.LENGTH_SHORT).show();
 		        }
+				break;
+				
+			case R.id.openslRecvButton:
+				if(mRecving)
+				{
+					mAudio.StopOpenslRecv();
+
+					mRecving = false;
+					recvTip.setText(getResources().getString(R.string.audio_stop));
+					recvTip.setTextColor(Color.RED);
+				}
+				else
+				{
+					mAudio.StartOpenslRecv(AudioWorker.mRecvPort);
+					
+					mRecving = true;
+					recvTip.setText(getResources().getString(R.string.audio_recving));
+					recvTip.setTextColor(Color.GREEN);
+				}
+				break;
+				
+			case R.id.openslSendButton:
+				if(mSending)
+				{
+					mAudio.StopOpenslSend();
+
+					mSending = false;
+					sendTip.setText(getResources().getString(R.string.audio_stop));
+					sendTip.setTextColor(Color.RED);
+				}
+				else
+				{
+					mRemoteAddr = AudioWorker.mPreAddress + mDataSetting.readData(MainActivity.contx, 0);
+					mAudio.StartOpenslSend(mRemoteAddr, AudioWorker.mRecvPort, AudioWorker.mSendPort);
+					
+					mSending = true;
+					sendTip.setText(getResources().getString(R.string.audio_sending));
+					sendTip.setTextColor(Color.GREEN);
+					Log.e("MainOpenslActivity", "mRemoteAddr: " + mRemoteAddr );
+				}
+				break;
+				
+			case R.id.openslAllButton:
 				break;
 		}
 	}

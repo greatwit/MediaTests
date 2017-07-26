@@ -10,11 +10,13 @@
     <string name="audio_stop">停止</string>
     <string name="audio_sending">发送中</string>
     <string name="audio_recving">接收中</string>
+    <string name="audio">音频</string>
+    <string name="recv_send">接收发送</string>
     
     <string name="video_test">视频测试</string>
     <string name="video">视频</string>
     <string name="video_encode">视频编码</string>
     <string name="video_decode">视频解码</string>
     <string name="video_encode_send">编码发送</string>
-    <string name="audio">音频</string>
+
 </resources>

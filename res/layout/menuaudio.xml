@@ -19,7 +19,7 @@
                 >
 			    <EditText   
 			        android:id="@+id/remoteAddr"
-				    android:layout_width="80dip"  
+				    android:layout_width="120dip"  
 				    android:layout_height="36dip"  
 				    android:layout_marginBottom="20dip"  
 				    android:textColorHint="#AAAAAA"
@@ -27,7 +27,7 @@
 				    android:textSize="15dip"  
 				    android:singleLine="true"  
 				    android:hint="@string/remote_addr"
-				    android:inputType="number"
+					android:digits="1234567890."
 				/>
 			    </LinearLayout>
 			    

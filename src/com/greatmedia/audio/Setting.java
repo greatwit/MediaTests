@@ -78,7 +78,7 @@ public class Setting
 			} 
 			catch (SQLiteException se) 
 			{
-				Log.e(dataBaseName,"Could not create or open the database");
+				Log.e(dataBaseName,"Could not create or open the database " + se.getMessage());
 			} 
 			finally 
 			{

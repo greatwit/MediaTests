@@ -35,9 +35,8 @@ public class FragmentAudioAlsa extends Fragment implements OnClickListener, Text
 	private EditText remoteAddr = null;
 	private TextView sendTip = null, recvTip = null;
 	
-	private String mPreAddress  = "192.168.0.";
 	private String mRemoteAddr  = "";
-	private short mSendPort = 1300, mRecvPort = 1200;
+	
 	private boolean mSending = false, mRecving = false, mAllAudio = false;
 	
 	AudioWorker mAudio   = new AudioWorker();
@@ -91,9 +90,9 @@ public class FragmentAudioAlsa extends Fragment implements OnClickListener, Text
 				}
 				else
 				{
-					mRemoteAddr = mPreAddress + mDataSetting.readData(MainActivity.contx, 0);
+					mRemoteAddr = AudioWorker.mPreAddress + mDataSetting.readData(MainActivity.contx, 0);
 					
-					mAudio.StartAlsaSend(mSendPort, mRemoteAddr.trim(), mRecvPort);
+					mAudio.StartAlsaSend(AudioWorker.mSendPort, mRemoteAddr.trim(), AudioWorker.mRecvPort);
 					/*
 					mAudio.AudioCreateSend(mSendPort);
 					mAudio.AudioConnectDest(mRemoteAddr.trim(), mRecvPort);
@@ -125,7 +124,7 @@ public class FragmentAudioAlsa extends Fragment implements OnClickListener, Text
 				}
 				else
 				{
-					mAudio.StartAlsaRecv(mRecvPort);
+					mAudio.StartAlsaRecv(AudioWorker.mRecvPort);
 					/*
 					mAudio.AudioCreateRecv(mRecvPort);
 					mAudio.AudioStartRecv(1);
@@ -157,7 +156,7 @@ public class FragmentAudioAlsa extends Fragment implements OnClickListener, Text
 				}
 				else
 				{ 
-					mAudio.StartAllAlsa( mRemoteAddr.trim(), mRecvPort, mSendPort);
+					mAudio.StartAllAlsa( mRemoteAddr.trim(), AudioWorker.mRecvPort, AudioWorker.mSendPort);
 					/*
 					mAudio.setSoundCardMode(true);
 					

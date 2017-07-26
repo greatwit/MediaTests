@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -14,20 +15,121 @@
         android:background="@color/red"
         />
 
-    <Button
-        android:id="@+id/startButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="开始测试"
-        android:layout_margin="20dp"
-        />
+    <LinearLayout 
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+    
+    <LinearLayout 
+    android:layout_width="160dp"
+    android:layout_height="200dp"
+    android:orientation="vertical"
+    android:layout_marginLeft="20dp"
+    >
+	    <Button
+	        android:id="@+id/startButton"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="开始测试"
+	        android:layout_margin="20dp"
+	        />
+	
+	    <Button
+	        android:id="@+id/stopButton"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="停止测试"
+	        android:layout_margin="20dp"
+	        />
+    </LinearLayout>
 
-    <Button
-        android:id="@+id/stopButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="停止测试"
-        android:layout_margin="20dp"
-        />
+        <LinearLayout 
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:orientation="vertical">
+                    <LinearLayout
+                android:id="@+id/sendlayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:layout_below="@id/addrlayout"
+                android:layout_marginTop="0dip"  
+                >
 
+                <Button 
+		        android:id="@+id/openslSendButton"
+		        android:layout_below="@id/remoteAddr"
+		        android:layout_width="120dip"
+		        android:layout_height="wrap_content"
+		        android:text="@string/audio_send"
+		        android:textColor="@drawable/textselector"
+		        >             
+    			</Button>
+    			
+                <TextView
+                    android:id="@+id/sendTip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/audio_stop"
+                    android:textColor="@color/red" 
+                />
+            	</LinearLayout>
+    
+
+                <LinearLayout
+                android:id="@+id/recvlayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:layout_below="@id/sendlayout"
+                >
+
+			    <Button
+			        android:id="@+id/openslRecvButton"
+			        android:layout_width="120dip"
+			        android:layout_height="wrap_content"
+			        android:text="@string/audio_recv"
+			        android:textColor="@drawable/textselector"
+			        >
+			    </Button>
+			    
+                <TextView
+                    android:id="@+id/recvTip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/audio_stop"
+                    android:textColor="@color/red" 
+                />
+            	</LinearLayout>
+            	
+                <LinearLayout
+                android:id="@+id/videolayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:layout_below="@id/recvlayout"
+                android:layout_marginTop="20dip" 
+                >
+
+			    <Button
+			        android:id="@+id/openslAllButton"
+			        android:layout_width="120dip"
+			        android:layout_height="wrap_content"
+			        android:text="@string/recv_send"
+			        android:textColor="@drawable/textselector"
+			        >
+			    </Button>
+    			
+                <TextView
+                    android:id="@+id/videoTip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/video"
+                    android:textColor="@color/red" 
+                />
+            	</LinearLayout>
+            </LinearLayout>
+      </LinearLayout>
+      
 </LinearLayout>
+
