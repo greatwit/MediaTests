@@ -36,7 +36,7 @@ import android.widget.Button;
 public class FragmentVideoNative extends Fragment implements SurfaceHolder.Callback, OnClickListener
 {
   private String TAG;
-  private Button btnVideoEncode		= null, btnVideoDecode = null, btnSendEncode = null;
+  private Button btnVideoEncode		= null, btnVideoDecode = null, btnSendEncode = null, btnRecvDecode = null;
   //private boolean mbEncoding        = false, mbDecoding = false, mbFilePlaying = false;
   
 
@@ -60,9 +60,12 @@ public class FragmentVideoNative extends Fragment implements SurfaceHolder.Callb
     btnVideoEncode 	 = (Button)v.findViewById(R.id.btnVideoEncode);
     btnVideoDecode	 = (Button)v.findViewById(R.id.btnVideoDecode);
     btnSendEncode	 = (Button)v.findViewById(R.id.btnSendEncode);
+    btnRecvDecode	 = (Button)v.findViewById(R.id.btnRecvDecode);
+    
     btnVideoEncode.setOnClickListener(this);
     btnVideoDecode.setOnClickListener(this);
     btnSendEncode.setOnClickListener(this);
+    btnRecvDecode.setOnClickListener(this);
     
     /*
     mDecoder  	= new CodecMedia();
@@ -123,6 +126,10 @@ public void onClick(View v) {
     	
 	    case R.id.btnSendEncode:
 	    	startActivity(new Intent().setClass(MainActivity.contx, SendEncodeActivity.class));
+	    	break;
+	    	
+	    case R.id.btnRecvDecode:
+	    	startActivity(new Intent().setClass(MainActivity.contx, RecvDecodeActivity.class));
 	    	break;
 	    	
 	}

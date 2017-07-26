@@ -33,12 +33,13 @@ public final class R {
     }
     public static final class id {
         public static final int TestSpinner=0x7f09000e;
-        public static final int action_settings=0x7f09001b;
+        public static final int action_settings=0x7f09001d;
         public static final int addrlayout=0x7f090003;
         public static final int btEncodecStart=0x7f090002;
         public static final int btnAudioAll=0x7f09000c;
         public static final int btnAudioRecv=0x7f090009;
         public static final int btnAudioSend=0x7f090006;
+        public static final int btnRecvDecode=0x7f09001b;
         public static final int btnSendEncode=0x7f090019;
         public static final int btnVideoDecode=0x7f090017;
         public static final int btnVideoEncode=0x7f090015;
@@ -49,6 +50,7 @@ public final class R {
         public static final int openslAllButton=0x7f090013;
         public static final int openslRecvButton=0x7f090012;
         public static final int openslSendButton=0x7f090011;
+        public static final int recvDecodeTip=0x7f09001c;
         public static final int recvTip=0x7f09000a;
         public static final int recvlayout=0x7f090008;
         public static final int remoteAddr=0x7f090004;
@@ -88,6 +90,7 @@ public final class R {
         public static final int remote_addr=0x7f060003;
         public static final int video=0x7f06000c;
         public static final int video_decode=0x7f06000e;
+        public static final int video_decode_recv=0x7f060010;
         public static final int video_encode=0x7f06000d;
         public static final int video_encode_send=0x7f06000f;
         public static final int video_test=0x7f06000b;
