@@ -12,6 +12,7 @@ import com.great.happyness.Codec.CodecMedia;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 
+import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
 import android.os.Bundle;
 import android.util.Log;
@@ -78,6 +79,7 @@ public class RecvDecodeActivity extends Activity implements SurfaceHolder.Callba
 		mMap.put(KEY_MIME, "video/avc");
 		mMap.put(KEY_WIDTH, new Integer(width));
 		mMap.put(KEY_HEIGHT, new Integer(height));
+		mMap.put(MediaFormat.KEY_COLOR_FORMAT, new Integer(MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420SemiPlanar));
 		mMap.put(MediaFormat.KEY_BIT_RATE, new Integer(2500000));
 		mMap.put(MediaFormat.KEY_FRAME_RATE, new Integer(20));
 		

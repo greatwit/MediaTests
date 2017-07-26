@@ -69,7 +69,8 @@ public class CodecMedia
 			switch(Build.VERSION.SDK_INT)
 			{
 				case Build.VERSION_CODES.JELLY_BEAN_MR1: //4.2, 4.2.2
-					System.loadLibrary("CodecBase4");
+					System.loadLibrary("CodecBase");
+					System.loadLibrary("great_media");
 					break;
 					
 				case Build.VERSION_CODES.LOLLIPOP: //5.0
@@ -77,13 +78,12 @@ public class CodecMedia
 					
 				case Build.VERSION_CODES.M: //android 6.0
 					System.loadLibrary("CodecBase6");
+					System.loadLibrary("great_media6");
 					break;
 			}
 
-			
 			System.loadLibrary("stlport");
-			System.loadLibrary("great_media");
-
+			
 			Log.e("..", "----------------2");
 		}
 		catch(Throwable e)

@@ -198,11 +198,20 @@ public class SendEncodeActivity extends Activity implements SurfaceHolder.Callba
 		// TODO Auto-generated method stub
 		Log.e(TAG, "camera data:" + data.length);
 		
-
+		int uvlen = width*height/2;
+		int ylen  = width*height;
+		for(int i=0;i<uvlen;)
+		{
+			byte tmp = data[ylen+i];
+			data[ylen+i] = data[ylen+i+1];
+			data[ylen+i+1] = tmp;
+			i+=2;
+		}
 			
+		
 		mCodecMedia.CodecSenderData(data, data.length);
 	}
-
+	
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
