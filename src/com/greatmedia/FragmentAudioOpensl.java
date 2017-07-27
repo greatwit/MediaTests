@@ -147,7 +147,7 @@ public class FragmentAudioOpensl extends Fragment implements OnClickListener
 				}
 				else
 				{
-					mRemoteAddr = AudioWorker.mPreAddress + mDataSetting.readData(MainActivity.contx, 0);
+					mRemoteAddr = mDataSetting.readData(MainActivity.contx, 0);
 					mAudio.StartOpenslSend(mRemoteAddr, AudioWorker.mRecvPort, AudioWorker.mSendPort);
 					
 					mSending = true;

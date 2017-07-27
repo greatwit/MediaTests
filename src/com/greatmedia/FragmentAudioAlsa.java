@@ -90,7 +90,7 @@ public class FragmentAudioAlsa extends Fragment implements OnClickListener, Text
 				}
 				else
 				{
-					mRemoteAddr = AudioWorker.mPreAddress + mDataSetting.readData(MainActivity.contx, 0);
+					mRemoteAddr = mDataSetting.readData(MainActivity.contx, 0);
 					
 					mAudio.StartAlsaSend(AudioWorker.mSendPort, mRemoteAddr.trim(), AudioWorker.mRecvPort);
 					/*

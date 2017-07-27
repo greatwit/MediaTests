@@ -11,7 +11,6 @@ import android.view.Surface;
 public class CodecMedia 
 {
 	
-	public static String mPreAddress  = "192.168.";
 	public static short mSendPort = 9000, mRecvPort = 8000;
 	
 	public CodecMedia()

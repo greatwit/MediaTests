@@ -7,8 +7,6 @@ import android.util.Log;
 
 public class AudioWorker 
 {
-    
-	public static String mPreAddress  = "192.168.";
 	public static short mSendPort = 1300, mRecvPort = 1200;
 	
 	public AudioWorker()
@@ -31,17 +29,6 @@ public class AudioWorker
 			Log.e("..", "----------------e:"+e.toString());
 		}
 
-	}
-	
-	public static String IpFactory(String readIp)
-	{
-		String resIp = "";
-		if(readIp.length()<=7)
-			resIp = mPreAddress + readIp;
-		else
-			resIp = readIp;
-			
-		return resIp;
 	}
 
 	public boolean StartAudioWork(String destAddr, short destPort, short localPort, int devCardid)

@@ -125,8 +125,9 @@ public class SendEncodeActivity extends Activity implements SurfaceHolder.Callba
 	public void surfaceCreated(SurfaceHolder holder) 
 	{
 		// TODO Auto-generated method stub
-		mRemoteAddr = CodecMedia.mPreAddress + mDataSetting.readData(MainActivity.contx, 0);
+		mRemoteAddr = mDataSetting.readData(MainActivity.contx, 0);
         mCodecMedia.StartCodecSender(keys, values, null, null, mRemoteAddr, CodecMedia.mRecvPort, CodecMedia.mSendPort, MediaCodec.CONFIGURE_FLAG_ENCODE);
+        Log.e("SendEncodeActivity", "mRemoteAddr: " + mRemoteAddr );
         
         mCamera = getBackCamera();
         startcamera(mCamera);

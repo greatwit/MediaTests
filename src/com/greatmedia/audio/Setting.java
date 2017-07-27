@@ -73,7 +73,7 @@ public class Setting
 								         "Keycounter varchar(20) ); ");
 
 				adobeDB.execSQL("UPDATE '" + tableName + "' SET " +
-					    "Keycounter = " + keycounter + " " + 
+					    "Keycounter = '" + keycounter + "' " + 
 					             " WHERE Keyindex = " + keyindex + ";");
 			} 
 			catch (SQLiteException se) 
