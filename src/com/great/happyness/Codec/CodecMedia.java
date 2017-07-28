@@ -1,18 +1,35 @@
 package com.great.happyness.Codec;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
+import com.greatmedia.MainActivity;
+import com.greatmedia.audio.Setting;
+
+import android.annotation.SuppressLint;
+import android.media.MediaCodec;
+import android.media.MediaCodecInfo;
 import android.media.MediaCrypto;
+import android.media.MediaFormat;
 import android.os.Build;
 import android.util.Log;
 import android.view.Surface;
 
 
-
+@SuppressWarnings("deprecation")
+@SuppressLint("UseValueOf")
 public class CodecMedia 
 {
 	
 	public static short mSendPort = 9000, mRecvPort = 8000;
 	
+	final String KEY_MIME 	= "mime";
+    final String KEY_WIDTH 	= "width";
+    final String KEY_HEIGHT = "height";
+    
+    Setting mDataSetting = new Setting();
+    
 	public CodecMedia()
 	{
 		
@@ -67,22 +84,29 @@ public class CodecMedia
 		{
 			switch(Build.VERSION.SDK_INT)
 			{
-				case Build.VERSION_CODES.JELLY_BEAN_MR1: //4.2, 4.2.2
+				case Build.VERSION_CODES.JELLY_BEAN_MR1: 	//4.2, 4.2.2
+				case Build.VERSION_CODES.JELLY_BEAN_MR2: 	//4.3
+				case Build.VERSION_CODES.KITKAT:			//4.4
+				case Build.VERSION_CODES.KITKAT_WATCH:		//4.4W
 					System.loadLibrary("CodecBase");
 					System.loadLibrary("great_media");
 					break;
 					
-				case Build.VERSION_CODES.LOLLIPOP: //5.0
+				case Build.VERSION_CODES.LOLLIPOP: 			//5.0
+				case Build.VERSION_CODES.LOLLIPOP_MR1:		//5.1
 					break;
 					
-				case Build.VERSION_CODES.M: //android 6.0
+				case 23: 									//6.0
 					System.loadLibrary("CodecBase6");
-					System.loadLibrary("great_media6");
+					System.loadLibrary("great_media");
+					break;
+					
+				case 24:									//7.0
 					break;
 					
 					default:
 						System.loadLibrary("CodecBase6");
-						System.loadLibrary("great_media6");
+						System.loadLibrary("great_media");
 						break;
 			}
 
@@ -97,13 +121,6 @@ public class CodecMedia
 
 	}
 
-	/*
-	private native void native_configure( String[] keys, Object[] values, Surface surface, MediaCrypto crypto, int flags);
-	public native final void startCodec();
-
-	public native boolean StartVideoSend(String[] keys, Object[] values, Surface surface, MediaCrypto crypto, int flags, BufferInfo info);
-	public native boolean StopVideoSend();
-	*/
 	public native boolean StartFileDecoder(String[] keys, Object[] values, Surface surface, MediaCrypto crypto, int flags);
 	public native boolean StopFileDecoder();
 	
@@ -118,17 +135,69 @@ public class CodecMedia
 	
 	public native boolean StartCodecRecver(String[] keys, Object[] values, Surface surface, MediaCrypto crypto, int flags, short recvport);
 	public native boolean StopCodecRecver();
+
+	@SuppressLint("NewApi")
+	public boolean StartCodecRecv(int width, int height, Surface surface)
+	{
+		Map<String, Object> mMap = new HashMap();
+		mMap.put(KEY_MIME, "video/avc");
+		mMap.put(KEY_WIDTH, new Integer(width));
+		mMap.put(KEY_HEIGHT, new Integer(height));
+		mMap.put(MediaFormat.KEY_COLOR_FORMAT, new Integer(MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420SemiPlanar));
+		mMap.put(MediaFormat.KEY_BIT_RATE, new Integer(width*height*5));
+		mMap.put(MediaFormat.KEY_FRAME_RATE, new Integer(20));
+		
+        String[] keys = null;
+        Object[] values = null;
+
+
+        keys = new String[mMap.size()];
+        values = new Object[mMap.size()];
+
+        int i = 0;
+        for (Map.Entry<String, Object> entry: mMap.entrySet()) 
+        {
+            keys[i] = entry.getKey();
+            values[i] = entry.getValue();
+            ++i;
+        }
+        return StartCodecRecver(keys, values, surface, null, 0, CodecMedia.mRecvPort);
+	}
 	
-	/*
-	public native final boolean StartVideoSend(String[] keys, Object[] values, Surface surface, MediaCrypto crypto, String remoteIp, int flags, short localSendPort, short remotePort);
-	public native final boolean StopVideoSend();
+	@SuppressLint("NewApi")
+	public boolean StartCodecSend(int width, int height, Surface surface)
+	{
+		Map<String, Object> mMap = new HashMap();
+		mMap.put(KEY_MIME, "video/avc");
+		mMap.put(KEY_WIDTH, new Integer(width));
+		mMap.put(KEY_HEIGHT, new Integer(height));
+		mMap.put(MediaFormat.KEY_COLOR_FORMAT, new Integer(MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420SemiPlanar)); 
+		mMap.put(MediaFormat.KEY_BIT_RATE, new Integer(width*height*5));
+		mMap.put(MediaFormat.KEY_FRAME_RATE, new Integer(20));
+		mMap.put(MediaFormat.KEY_I_FRAME_INTERVAL, new Integer(2)); //i frame
+		
+		
+        String[] keys = null;
+        Object[] values = null;
+
+
+        keys = new String[mMap.size()];
+        values = new Object[mMap.size()];
+
+        int i = 0;
+        for (Map.Entry<String, Object> entry: mMap.entrySet()) 
+        {
+            keys[i] = entry.getKey();
+            values[i] = entry.getValue();
+            ++i;
+        }
+        
+        String remoteAddr = mDataSetting.readData(MainActivity.contx, 0);
+        Log.e("SendEncodeActivity", "mRemoteAddr: " + remoteAddr );
+        
+        return StartCodecSender(keys, values, null, null, remoteAddr, CodecMedia.mRecvPort, CodecMedia.mSendPort, MediaCodec.CONFIGURE_FLAG_ENCODE);
+	}
 	
-	public native final boolean StartVideoRecv(String[] keys, Object[] values, Surface surface, MediaCrypto crypto, int flags, short localRecvPort);
-	public native final boolean StopVideoRecv();
-	
-	public native final boolean StartVideoFilePlay(String[] keys, Object[] values, Surface surface, MediaCrypto crypto, int flags);
-	public native final boolean StopVideoFilePlay();
-	*/
 }
 
 

@@ -1,10 +1,6 @@
 
 package com.greatmedia;
 
-
-import java.util.HashMap;
-import java.util.Map;
-
 import com.great.happyness.Codec.CodecMedia;
 
 
@@ -12,10 +8,7 @@ import com.great.happyness.Codec.CodecMedia;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 
-import android.media.MediaCodecInfo;
-import android.media.MediaFormat;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.WindowManager;
@@ -26,10 +19,6 @@ public class RecvDecodeActivity extends Activity implements SurfaceHolder.Callba
 	private final int height 	= 480;
 	
 	private SurfaceHolder holder = null;
-	
-	final String KEY_MIME = "mime";
-    final String KEY_WIDTH = "width";
-    final String KEY_HEIGHT = "height";
 	
     private CodecMedia mCodecMedia  	=  new CodecMedia();
     
@@ -45,62 +34,13 @@ public class RecvDecodeActivity extends Activity implements SurfaceHolder.Callba
 
 		holder = sfv_video.getHolder();
 		holder.addCallback(this);
-		
-		
-		
-		MediaFormat mediaFormat = MediaFormat.createVideoFormat("video/avc", width, height);
-		mediaFormat.setInteger(MediaFormat.KEY_BIT_RATE, 2500000);
-		mediaFormat.setInteger(MediaFormat.KEY_FRAME_RATE, 20);
-		
-		//Map<String, Object> formatMap = mediaFormat.getMap();
 	}
-
-	class BufferInfo 
-	{
-        public void set(int newOffset, int newSize, long newTimeUs, int newFlags) 
-        {
-            offset = newOffset;
-            size = newSize;
-            presentationTimeUs = newTimeUs;
-            flags = newFlags;
-        }
-
-        public int offset;
-        public int size;
-        public long presentationTimeUs;
-        public int flags;
-    };
 	
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) 
 	{
 		// TODO Auto-generated method stub
-		Map<String, Object> mMap = new HashMap();
-		mMap.put(KEY_MIME, "video/avc");
-		mMap.put(KEY_WIDTH, new Integer(width));
-		mMap.put(KEY_HEIGHT, new Integer(height));
-		mMap.put(MediaFormat.KEY_COLOR_FORMAT, new Integer(MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420SemiPlanar));
-		mMap.put(MediaFormat.KEY_BIT_RATE, new Integer(2500000));
-		mMap.put(MediaFormat.KEY_FRAME_RATE, new Integer(20));
-		
-        String[] keys = null;
-        Object[] values = null;
-
-
-        keys = new String[mMap.size()];
-        values = new Object[mMap.size()];
-
-        int i = 0;
-        for (Map.Entry<String, Object> entry: mMap.entrySet()) 
-        {
-            keys[i] = entry.getKey();
-            values[i] = entry.getValue();
-            ++i;
-        } 
-        
-        Log.e("native", "=========size:"+mMap.size());
-		//mCodecMedia.StartVideoSend(keys, values, holder.getSurface(), null, 0, null);
-        mCodecMedia.StartCodecRecver(keys, values, holder.getSurface(), null, 0, CodecMedia.mRecvPort);
+		mCodecMedia.StartCodecRecv(width, height, holder.getSurface());
 	}
 
 	@Override
