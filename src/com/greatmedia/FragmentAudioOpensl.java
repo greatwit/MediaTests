@@ -36,7 +36,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class FragmentAudioOpensl extends Fragment implements OnClickListener, TextWatcher
+public class FragmentAudioOpensl extends Fragment implements OnClickListener
 {
 
     private Spinner mTestSpinner;
@@ -65,10 +65,62 @@ public class FragmentAudioOpensl extends Fragment implements OnClickListener, Te
 	    View v = inflater.inflate(R.layout.menuopensl, container, false);
 	
 	    remoteAddr	 = (EditText)v.findViewById(R.id.remoteAddr);
-		remoteAddr.addTextChangedListener(this);
-		remoteAddr.setText("" + mDataSetting.readData(MainActivity.contx, 0));
+	    remoteAddr.setText("" + mDataSetting.readData(MainActivity.contx, 0));
+		remoteAddr.addTextChangedListener(new TextWatcher() 
+		{
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+				// TODO Auto-generated method stub
+				Log.e("MainActivity", "emoteAddr: " + remoteAddr.getText().toString() );
+				String addr = remoteAddr.getText().toString();
+				mDataSetting.InsertOrUpdate(MainActivity.contx, 0, addr);
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
 	    
 		remotePort   = (EditText)v.findViewById(R.id.remotePort);
+		remotePort.setText("" + mDataSetting.readData(MainActivity.contx, 1));
+		remotePort.addTextChangedListener(new TextWatcher() 
+		{
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+				// TODO Auto-generated method stub
+				Log.e("MainActivity", "emoteAddr: " + remoteAddr.getText().toString() );
+				String port = remotePort.getText().toString();
+				mDataSetting.InsertOrUpdate(MainActivity.contx, 1, port);
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
 		
 	    mTestSpinner = (Spinner) v.findViewById(R.id.TestSpinner);
 	    ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.contx, android.R.layout.simple_list_item_1, TEST_PROGRAM_ARRAY);
@@ -141,11 +193,18 @@ public class FragmentAudioOpensl extends Fragment implements OnClickListener, Te
 				}
 				else
 				{
-					mAudio.StartOpenslRecv(mNetWork.getInnerPort());//AudioWorker.mRecvPort
+					int recvPort = 0;
+					if(mNetWork.getInnerPort()==0)
+						recvPort = AudioWorker.mRecvPort;
+					else
+						recvPort = mNetWork.getInnerPort();
+					
+					mAudio.StartOpenslRecv(recvPort);//AudioWorker.mRecvPort
 					
 					mRecving = true;
 					recvTip.setText(getResources().getString(R.string.audio_recving));
 					recvTip.setTextColor(Color.GREEN);
+					Log.e("MainOpenslActivity", "openslRecvButton  mRecvPort" +  recvPort);
 				}
 				break;
 				
@@ -162,14 +221,24 @@ public class FragmentAudioOpensl extends Fragment implements OnClickListener, Te
 				else
 				{
 					String strPort =  remotePort.getText().toString();
-					int sPort = Integer.parseInt(strPort);
+					int recvPort = 0, sendPort = 0;
+					if("".equals(remotePort.getText().toString()))
+						recvPort = AudioWorker.mRecvPort;
+					else
+						recvPort = Integer.parseInt(strPort);
+					
+					if(mNetWork.getInnerPort()==0)
+						sendPort = AudioWorker.mSendPort;
+					else
+						sendPort = mNetWork.getInnerPort();
+					
 					mRemoteAddr = mDataSetting.readData(MainActivity.contx, 0);
-					mAudio.StartOpenslSend(mRemoteAddr, sPort, mNetWork.getInnerPort());//AudioWorker.mRecvPort, AudioWorker.mSendPort
+					mAudio.StartOpenslSend(mRemoteAddr, recvPort, sendPort);//AudioWorker.mRecvPort, 
 					
 					mSending = true;
 					sendTip.setText(getResources().getString(R.string.audio_sending));
 					sendTip.setTextColor(Color.GREEN);
-					Log.e("MainOpenslActivity", "mRemoteAddr: " + mRemoteAddr + "remotePort:" + sPort);
+					Log.e("MainOpenslActivity", "mRemoteAddr: " + mRemoteAddr + "remotePort:" + recvPort + " sendProt:"+sendPort);
 				}
 				break;
 				
@@ -180,25 +249,7 @@ public class FragmentAudioOpensl extends Fragment implements OnClickListener, Te
 		}
 	}
 	
-	@Override
-	public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-		// TODO Auto-generated method stub
-		
-	}
 
-	@Override
-	public void onTextChanged(CharSequence s, int start, int before, int count) {
-		// TODO Auto-generated method stub
-		Log.e("MainActivity", "emoteAddr: " + remoteAddr.getText().toString() );
-		String addr = remoteAddr.getText().toString();
-		mDataSetting.InsertOrUpdate(MainActivity.contx, 0, addr);
-	}
-
-	@Override
-	public void afterTextChanged(Editable s) {
-		// TODO Auto-generated method stub
-		
-	}
 
 }
 
