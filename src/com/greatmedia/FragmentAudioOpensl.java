@@ -21,6 +21,8 @@ import com.greatmedia.opensles.tester.Tester;
 import android.app.Fragment;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,12 +30,13 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class FragmentAudioOpensl extends Fragment implements OnClickListener
+public class FragmentAudioOpensl extends Fragment implements OnClickListener, TextWatcher
 {
 
     private Spinner mTestSpinner;
@@ -41,6 +44,9 @@ public class FragmentAudioOpensl extends Fragment implements OnClickListener
     private Button startButton = null, stopButton = null;
     private Button openslRecvButton = null, openslSendButton = null, openslAllButton = null;
     private TextView sendTip = null, recvTip = null;
+    
+    private EditText remoteAddr = null, remotePort = null;
+    NetWork mNetWork = new NetWork();
     
     AudioWorker mAudio   = new AudioWorker();
 	Setting mDataSetting = new Setting();
@@ -58,6 +64,12 @@ public class FragmentAudioOpensl extends Fragment implements OnClickListener
   {
 	    View v = inflater.inflate(R.layout.menuopensl, container, false);
 	
+	    remoteAddr	 = (EditText)v.findViewById(R.id.remoteAddr);
+		remoteAddr.addTextChangedListener(this);
+		remoteAddr.setText("" + mDataSetting.readData(MainActivity.contx, 0));
+	    
+		remotePort   = (EditText)v.findViewById(R.id.remotePort);
+		
 	    mTestSpinner = (Spinner) v.findViewById(R.id.TestSpinner);
 	    ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.contx, android.R.layout.simple_list_item_1, TEST_PROGRAM_ARRAY);
 	    mTestSpinner.setAdapter(adapter);
@@ -129,7 +141,7 @@ public class FragmentAudioOpensl extends Fragment implements OnClickListener
 				}
 				else
 				{
-					mAudio.StartOpenslRecv(AudioWorker.mRecvPort);
+					mAudio.StartOpenslRecv((short)mNetWork.getInnerPort());//AudioWorker.mRecvPort
 					
 					mRecving = true;
 					recvTip.setText(getResources().getString(R.string.audio_recving));
@@ -148,22 +160,43 @@ public class FragmentAudioOpensl extends Fragment implements OnClickListener
 				}
 				else
 				{
+					String strPort =  remotePort.getText().toString();
+					short sPort = (short)Integer.parseInt(strPort);
 					mRemoteAddr = mDataSetting.readData(MainActivity.contx, 0);
-					mAudio.StartOpenslSend(mRemoteAddr, AudioWorker.mRecvPort, AudioWorker.mSendPort);
+					mAudio.StartOpenslSend(mRemoteAddr, sPort, (short)mNetWork.getInnerPort());//AudioWorker.mRecvPort, AudioWorker.mSendPort
 					
 					mSending = true;
 					sendTip.setText(getResources().getString(R.string.audio_sending));
 					sendTip.setTextColor(Color.GREEN);
-					Log.e("MainOpenslActivity", "mRemoteAddr: " + mRemoteAddr );
+					Log.e("MainOpenslActivity", "mRemoteAddr: " + mRemoteAddr + "remotePort:" + sPort);
 				}
 				break;
 				
 			case R.id.openslAllButton:
-				NetWork work = new NetWork();
-				int res = work.getStunAddr("120.76.204.188", "3478");
-				Log.e("MainOpenslActivity", "-------------"+res);
+				int res = mNetWork.getStunAddr("120.76.204.188", "3478");
+				Log.e("MainOpenslActivity", "--getStunAddr result:"+res);
 				break;
 		}
+	}
+	
+	@Override
+	public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onTextChanged(CharSequence s, int start, int before, int count) {
+		// TODO Auto-generated method stub
+		Log.e("MainActivity", "emoteAddr: " + remoteAddr.getText().toString() );
+		String addr = remoteAddr.getText().toString();
+		mDataSetting.InsertOrUpdate(MainActivity.contx, 0, addr);
+	}
+
+	@Override
+	public void afterTextChanged(Editable s) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

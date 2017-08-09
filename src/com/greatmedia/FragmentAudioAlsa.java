@@ -28,11 +28,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 
-public class FragmentAudioAlsa extends Fragment implements OnClickListener, TextWatcher
+public class FragmentAudioAlsa extends Fragment implements OnClickListener
 {
 
 	private Button btnAudioSend = null, btnAudioRecv = null, btnAudioAll = null;
-	private EditText remoteAddr = null;
+	
 	private TextView sendTip = null, recvTip = null;
 	
 	private String mRemoteAddr  = "";
@@ -47,19 +47,17 @@ public class FragmentAudioAlsa extends Fragment implements OnClickListener, Text
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) 
   {
-    View v = inflater.inflate(R.layout.menuaudio, container, false);
+    View v = inflater.inflate(R.layout.menualsa, container, false);
 	btnAudioSend = (Button)v.findViewById(R.id.btnAudioSend);
 	btnAudioRecv = (Button)v.findViewById(R.id.btnAudioRecv);
 	btnAudioAll  = (Button)v.findViewById(R.id.btnAudioAll);
-	remoteAddr	 = (EditText)v.findViewById(R.id.remoteAddr);
+	
 	sendTip	 	 = (TextView)v.findViewById(R.id.sendTip);
 	recvTip	 	 = (TextView)v.findViewById(R.id.recvTip);
 	btnAudioSend.setOnClickListener(this);
 	btnAudioRecv.setOnClickListener(this);
 	btnAudioAll.setOnClickListener(this);
-	remoteAddr.addTextChangedListener(this);
-	
-	remoteAddr.setText("" + mDataSetting.readData(MainActivity.contx, 0));
+
 	
 	mDataSetting.setClickSound(MainActivity.contx, false);
 	
@@ -186,25 +184,7 @@ public class FragmentAudioAlsa extends Fragment implements OnClickListener, Text
 		super.onDestroy();
 	}
 	
-@Override
-public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-	// TODO Auto-generated method stub
-	
-}
 
-@Override
-public void onTextChanged(CharSequence s, int start, int before, int count) {
-	// TODO Auto-generated method stub
-	Log.e("MainActivity", "emoteAddr: " + remoteAddr.getText().toString() );
-	String addr = remoteAddr.getText().toString();
-	mDataSetting.InsertOrUpdate(MainActivity.contx, 0, addr);
-}
-
-@Override
-public void afterTextChanged(Editable s) {
-	// TODO Auto-generated method stub
-	
-}
 
 
 
