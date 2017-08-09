@@ -12,6 +12,7 @@ package com.greatmedia;
 
 import com.greatmedia.audio.AudioWorker;
 import com.greatmedia.audio.Setting;
+import com.greatmedia.internet.NetWork;
 import com.greatmedia.opensles.tester.CaptureTester;
 import com.greatmedia.opensles.tester.NativeAudioTester;
 import com.greatmedia.opensles.tester.PlayerTester;
@@ -158,6 +159,9 @@ public class FragmentAudioOpensl extends Fragment implements OnClickListener
 				break;
 				
 			case R.id.openslAllButton:
+				NetWork work = new NetWork();
+				int res = work.getStunAddr("120.76.204.188", "3478");
+				Log.e("MainOpenslActivity", "-------------"+res);
 				break;
 		}
 	}

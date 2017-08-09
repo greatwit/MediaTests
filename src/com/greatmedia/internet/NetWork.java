@@ -26,5 +26,45 @@ public class NetWork
 
 	}
 	
-	public native static int  getStunAddr(String destip, String destport);
+	int toUnsigned(short s) 
+	{ 
+            return s & 0x0FFFF; 
+    }
+	
+    public void SetInfo( String outerIp, String innerIp, short outerPort, short innerPort) 
+    {
+    	mOuterIp 	= outerIp;
+		mInnerIp 	= innerIp;
+		mOuterPort 	= toUnsigned(outerPort);
+		mInnerPort  = toUnsigned(innerPort);
+		
+    	Log.e("NetWork", "oip:" + mOuterIp + " iIp:"+mInnerIp + " oPort:" + mOuterPort + " iPort:"+mInnerPort);
+    }
+	
+    public String getOuterIp()
+    {
+    	return mOuterIp;
+    }
+    
+    public String getInnerIp()
+    {
+    	return mInnerIp;
+    }
+    
+    public int getOuterPort()
+    {
+    	return mOuterPort;
+    }
+    
+    public int getInnerPort()
+    {
+    	return mInnerPort;
+    }
+    
+    private String mOuterIp 		= "";
+    private String mInnerIp 		= "";
+    private int  mOuterPort 		= 0;
+    private int  mInnerPort 		= 0;
+    
+	public native int  getStunAddr(String destip, String destport);
 }
