@@ -141,7 +141,7 @@ public class FragmentAudioOpensl extends Fragment implements OnClickListener, Te
 				}
 				else
 				{
-					mAudio.StartOpenslRecv((short)mNetWork.getInnerPort());//AudioWorker.mRecvPort
+					mAudio.StartOpenslRecv(mNetWork.getInnerPort());//AudioWorker.mRecvPort
 					
 					mRecving = true;
 					recvTip.setText(getResources().getString(R.string.audio_recving));
@@ -149,6 +149,7 @@ public class FragmentAudioOpensl extends Fragment implements OnClickListener, Te
 				}
 				break;
 				
+
 			case R.id.openslSendButton:
 				if(mSending)
 				{
@@ -161,9 +162,9 @@ public class FragmentAudioOpensl extends Fragment implements OnClickListener, Te
 				else
 				{
 					String strPort =  remotePort.getText().toString();
-					short sPort = (short)Integer.parseInt(strPort);
+					int sPort = Integer.parseInt(strPort);
 					mRemoteAddr = mDataSetting.readData(MainActivity.contx, 0);
-					mAudio.StartOpenslSend(mRemoteAddr, sPort, (short)mNetWork.getInnerPort());//AudioWorker.mRecvPort, AudioWorker.mSendPort
+					mAudio.StartOpenslSend(mRemoteAddr, sPort, mNetWork.getInnerPort());//AudioWorker.mRecvPort, AudioWorker.mSendPort
 					
 					mSending = true;
 					sendTip.setText(getResources().getString(R.string.audio_sending));
