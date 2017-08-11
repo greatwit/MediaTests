@@ -35,6 +35,7 @@
 		    android:textSize="15dip"  
 		    android:singleLine="true"  
 		    android:hint="@string/remote_addr"
+		    android:inputType="number"
 			android:digits="1234567890."
 		/>
 	    </LinearLayout>

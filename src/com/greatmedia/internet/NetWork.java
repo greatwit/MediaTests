@@ -67,4 +67,7 @@ public class NetWork
     private int  mInnerPort 		= 0;
     
 	public native int  getStunAddr(String destip, String destport);
+	public native int  SendData(String destip, int destport);
+	public native void CloseStun();
+	
 }

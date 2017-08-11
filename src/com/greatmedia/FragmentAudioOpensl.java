@@ -183,13 +183,15 @@ public class FragmentAudioOpensl extends Fragment implements OnClickListener
 				break;
 				
 			case R.id.openslRecvButton:
+				/*
 				if(mRecving)
 				{
 					mAudio.StopOpenslRecv();
 
-					mRecving = false;
 					recvTip.setText(getResources().getString(R.string.audio_stop));
 					recvTip.setTextColor(Color.RED);
+					
+					mRecving = false;
 				}
 				else
 				{
@@ -200,23 +202,27 @@ public class FragmentAudioOpensl extends Fragment implements OnClickListener
 						recvPort = mNetWork.getInnerPort();
 					
 					mAudio.StartOpenslRecv(recvPort);//AudioWorker.mRecvPort
-					
-					mRecving = true;
+
 					recvTip.setText(getResources().getString(R.string.audio_recving));
 					recvTip.setTextColor(Color.GREEN);
+					
+					
 					Log.e("MainOpenslActivity", "openslRecvButton  mRecvPort" +  recvPort);
-				}
+					mRecving = true;
+				}*/
+				mNetWork.CloseStun();
 				break;
 				
 
 			case R.id.openslSendButton:
+				/*
 				if(mSending)
 				{
 					mAudio.StopOpenslSend();
-
-					mSending = false;
 					sendTip.setText(getResources().getString(R.string.audio_stop));
 					sendTip.setTextColor(Color.RED);
+					
+					mSending = false;
 				}
 				else
 				{
@@ -234,23 +240,35 @@ public class FragmentAudioOpensl extends Fragment implements OnClickListener
 					
 					mRemoteAddr = mDataSetting.readData(MainActivity.contx, 0);
 					mAudio.StartOpenslSend(mRemoteAddr, recvPort, sendPort);//AudioWorker.mRecvPort, 
-					
-					mSending = true;
+
 					sendTip.setText(getResources().getString(R.string.audio_sending));
 					sendTip.setTextColor(Color.GREEN);
+					
 					Log.e("MainOpenslActivity", "mRemoteAddr: " + mRemoteAddr + "remotePort:" + recvPort + " sendProt:"+sendPort);
+					mSending = true;
 				}
+				*/
+				String strPort =  remotePort.getText().toString();
+				int sendPort = Integer.parseInt(strPort);
+				mRemoteAddr = mDataSetting.readData(MainActivity.contx, 0);
+				int result = mNetWork.SendData(mRemoteAddr, sendPort);
+				Log.e("MainOpenslActivity", "mNetWork.SendData result:"+result);
 				break;
 				
 			case R.id.openslAllButton:
-				int res = mNetWork.getStunAddr("120.76.204.188", "3478");
-				Log.e("MainOpenslActivity", "--getStunAddr result:"+res);
+				new StunThread().start();
 				break;
 		}
 	}
 	
-
-
+	class StunThread extends Thread 
+	{   
+        public void run()
+        {
+			int res = mNetWork.getStunAddr("120.76.204.188", "3478");
+			Log.e("MainOpenslActivity", "--getStunAddr result:"+res);
+        }
+	}
 }
 
 
