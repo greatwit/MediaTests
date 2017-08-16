@@ -12,6 +12,7 @@ package com.greatmedia;
 
 import com.greatmedia.audio.AudioWorker;
 import com.greatmedia.audio.Setting;
+import com.greatmedia.internet.NetWork;
 
 import android.app.Fragment;
 import android.graphics.Color;
@@ -90,7 +91,7 @@ public class FragmentAudioAlsa extends Fragment implements OnClickListener
 				{
 					mRemoteAddr = mDataSetting.readData(MainActivity.contx, 0);
 					
-					mAudio.StartAlsaSend(AudioWorker.mSendPort, mRemoteAddr.trim(), AudioWorker.mRecvPort);
+					mAudio.StartAlsaSend(NetWork.mSendPort, mRemoteAddr.trim(), NetWork.mRecvPort);
 					/*
 					mAudio.AudioCreateSend(mSendPort);
 					mAudio.AudioConnectDest(mRemoteAddr.trim(), mRecvPort);
@@ -122,7 +123,7 @@ public class FragmentAudioAlsa extends Fragment implements OnClickListener
 				}
 				else
 				{
-					mAudio.StartAlsaRecv(AudioWorker.mRecvPort);
+					mAudio.StartAlsaRecv(NetWork.mRecvPort);
 					/*
 					mAudio.AudioCreateRecv(mRecvPort);
 					mAudio.AudioStartRecv(1);
@@ -154,7 +155,7 @@ public class FragmentAudioAlsa extends Fragment implements OnClickListener
 				}
 				else
 				{ 
-					mAudio.StartAllAlsa( mRemoteAddr.trim(), AudioWorker.mRecvPort, AudioWorker.mSendPort);
+					mAudio.StartAllAlsa( mRemoteAddr.trim(), NetWork.mRecvPort, NetWork.mSendPort);
 					/*
 					mAudio.setSoundCardMode(true);
 					

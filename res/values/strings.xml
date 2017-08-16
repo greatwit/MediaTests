@@ -4,6 +4,14 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="remote_addr">请输入远程地址</string>
+    <string name="server1">服务器1</string>
+    <string name="server2">服务器2</string>
+    <string name="closeser">关闭服务</string>
+    <string name="innernet">内网地址:</string>
+    <string name="outernet">外网地址</string>
+    <string name="ip_addr">地址</string>
+    <string name="port_addr">端口</string>
+    <string name="network">网络</string>
     <string name="audio_send">音频发送</string>
     <string name="audio_recv">音频接收</string>
     <string name="audio_stop">停止</string>

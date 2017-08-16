@@ -7,7 +7,7 @@ import android.util.Log;
 
 public class AudioWorker 
 {
-	public static short mSendPort = 1300, mRecvPort = 1200;
+	
 	
 	public AudioWorker()
 	{
@@ -19,8 +19,8 @@ public class AudioWorker
 		try
 		{
 			Log.e("..", "----------------1");
-			System.loadLibrary("OpenAudio");
 			System.loadLibrary("stlport");
+			System.loadLibrary("OpenAudio");
 			System.loadLibrary("AudioTest");
 			Log.e("..", "----------------1");
 		}

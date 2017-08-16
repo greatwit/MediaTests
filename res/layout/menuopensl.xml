@@ -6,39 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-         <LinearLayout
-         android:id="@+id/addrlayout"
-         android:layout_width="fill_parent"
-         android:layout_height="wrap_content"
-         android:gravity="center_horizontal"
-         android:layout_marginTop="80dip" 
-         >
-	    <EditText   
-	        android:id="@+id/remoteAddr"
-		    android:layout_width="150dip"  
-		    android:layout_height="36dip"  
-		    android:layout_marginBottom="20dip"  
-		    android:textColorHint="#AAAAAA"
-		    android:textColor="#FFFFFF"
-		    android:textSize="15dip"  
-		    android:singleLine="true"  
-		    android:hint="@string/remote_addr"
-			android:digits="1234567890."
-		/>
-	    	<EditText   
-	        android:id="@+id/remotePort"
-		    android:layout_width="80dip"  
-		    android:layout_height="36dip"  
-		    android:layout_marginBottom="20dip"  
-		    android:textColorHint="#AAAAAA"
-		    android:textColor="#FFFFFF"
-		    android:textSize="15dip"  
-		    android:singleLine="true"  
-		    android:hint="@string/remote_addr"
-		    android:inputType="number"
-			android:digits="1234567890."
-		/>
-	    </LinearLayout>
+
     
     <Spinner
         android:id="@+id/TestSpinner"

@@ -4,7 +4,7 @@ package com.greatmedia.internet;
 
 public class NetInfo 
 {
-    public void set( String outerIp, String innerIp, short outerPort, short innerPort) 
+    public void set( String outerIp, String innerIp, int outerPort, int innerPort) 
     {
     	mOuterIp 	= outerIp;
 		mInnerIp 	= innerIp;
@@ -22,20 +22,20 @@ public class NetInfo
     	return mInnerIp;
     }
     
-    public short getOuterPort()
+    public int getOuterPort()
     {
     	return mOuterPort;
     }
     
-    public short getInnerPort()
+    public int getInnerPort()
     {
     	return mInnerPort;
     }
     
     private String mOuterIp 		= "";
     private String mInnerIp 		= "";
-    private short  mOuterPort 	= 0;
-    private short  mInnerPort 	= 0;
+    private int  mOuterPort 	= 0;
+    private int  mInnerPort 	= 0;
 };
 
 

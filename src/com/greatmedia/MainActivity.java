@@ -1,8 +1,6 @@
 package com.greatmedia;
 
 
-import com.greatmedia.audio.AudioWorker;
-import com.greatmedia.audio.Setting;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -10,24 +8,18 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ActionBar.Tab;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.DisplayMetrics;
-import android.util.Log;
+
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 
+
+@SuppressWarnings("deprecation")
 public class MainActivity extends Activity  implements OnClickListener
 {
-	
 	public static Context contx;
 	
 	private String TAG = "MainActivity";
@@ -48,9 +40,9 @@ public class MainActivity extends Activity  implements OnClickListener
 	    public TabListener(Activity activity, String tag, Class<T> clz,
 	        Bundle args) {
 	      this.activity = activity;
-	      this.tag = tag;
+	      this.tag 		= tag;
 	      this.instance = clz;
-	      this.args = args;
+	      this.args 	= args;
 	    }
 
 	    public void onTabSelected(Tab tab, FragmentTransaction ft) {
@@ -95,6 +87,7 @@ public class MainActivity extends Activity  implements OnClickListener
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 	}
 	
+	
 	private void initWidgets()
 	{
 	    // Create action bar with all tabs.
@@ -103,15 +96,21 @@ public class MainActivity extends Activity  implements OnClickListener
 	    actionBar.setDisplayShowTitleEnabled(false);
 
 	    Tab tab = actionBar.newTab()
+		        .setText("Network")
+		        .setTabListener(new TabListener<FragmentNetWork>(
+		            this, "network", FragmentNetWork.class));
+		    actionBar.addTab(tab);
+	    
+	    tab = actionBar.newTab()
 	        .setText("Audio")
 	        .setTabListener(new TabListener<FragmentAudioAlsa>(
 	            this, "audio", FragmentAudioAlsa.class));
 	    actionBar.addTab(tab);
 
 	    tab = actionBar.newTab()
-	        .setText("OpenslAudio")
+	        .setText("Opensl")
 	        .setTabListener(new TabListener<FragmentAudioOpensl>(
-	            this, "OpenslAudio", FragmentAudioOpensl.class));
+	            this, "Opensl", FragmentAudioOpensl.class));
 	    actionBar.addTab(tab);
 
 	    tab = actionBar.newTab()
@@ -121,9 +120,9 @@ public class MainActivity extends Activity  implements OnClickListener
 	    actionBar.addTab(tab);
 
 	    tab = actionBar.newTab()
-	        .setText("NativeVideo")
+	        .setText("Native")
 	        .setTabListener(new TabListener<FragmentVideoNative>(
-	            this, "NativeVideo", FragmentVideoNative.class));
+	            this, "Native", FragmentVideoNative.class));
 	    actionBar.addTab(tab);
 	}
 
