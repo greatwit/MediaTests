@@ -7,29 +7,27 @@ import java.util.Map;
 
 import com.great.happyness.Codec.CodecMedia;
 
-
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 
 import android.media.MediaFormat;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
-import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.WindowManager;
 
 public class NativeDecodeActivity extends Activity implements SurfaceHolder.Callback 
 {
-	private final int width = 1280;
-	private final int height = 720;
+	private final int width 	= 1280;
+	private final int height 	= 720;
 	
-	private static String fileString = "/sdcard/camera.h264";
+	private static String fileString = Environment.getExternalStorageDirectory().getAbsolutePath() + "/camera.h264";
 	private SurfaceHolder holder = null;
 	
-	final String KEY_MIME = "mime";
-    final String KEY_WIDTH = "width";
+	final String KEY_MIME 	= "mime";
+    final String KEY_WIDTH 	= "width";
     final String KEY_HEIGHT = "height";
 	
     private CodecMedia mCodecMedia  	=  new CodecMedia();
@@ -46,14 +44,12 @@ public class NativeDecodeActivity extends Activity implements SurfaceHolder.Call
 
 		holder = sfv_video.getHolder();
 		holder.addCallback(this);
-		
-		
-		
+
 		MediaFormat mediaFormat = MediaFormat.createVideoFormat("video/avc", width, height);
 		mediaFormat.setInteger(MediaFormat.KEY_BIT_RATE, 2500000);
 		mediaFormat.setInteger(MediaFormat.KEY_FRAME_RATE, 20);
 		
-		//Map<String, Object> formatMap = mediaFormat.getMap();
+		mCodecMedia.StopVideoSend();
 	}
 
 	class BufferInfo 
@@ -72,71 +68,7 @@ public class NativeDecodeActivity extends Activity implements SurfaceHolder.Call
         public int flags;
     };
 	
-	private class PlayerThread extends Thread 
-	{
-		private CodecMedia decoder  	=  new CodecMedia();
-		private Surface surface = null;
-		private SurfaceHolder surfaceHolder = null;
-
-		public PlayerThread( Surface surface, SurfaceHolder surfaceHolder) 
-		{
-			this.surface = surface;
-			this.surfaceHolder = surfaceHolder;
-		}
-
-		@SuppressLint("NewApi")
-		@Override
-		public void run() 
-		{
-			Map<String, Object> mMap = new HashMap();
-			mMap.put(KEY_MIME, "video/avc");
-			mMap.put(KEY_WIDTH, new Integer(width));
-			mMap.put(KEY_HEIGHT, new Integer(height));
-			mMap.put(MediaFormat.KEY_BIT_RATE, new Integer(2500000));
-			mMap.put(MediaFormat.KEY_FRAME_RATE, new Integer(20));
-			
-	        String[] keys = null;
-	        Object[] values = null;
-
-
-	        keys = new String[mMap.size()];
-	        values = new Object[mMap.size()];
-
-	        int i = 0;
-	        for (Map.Entry<String, Object> entry: mMap.entrySet()) 
-	        {
-	            keys[i] = entry.getKey();
-	            values[i] = entry.getValue();
-	            ++i;
-	        }
-	        
-	        Log.e("native", "=========size:"+mMap.size());
-
-	        
-	        
-			
-			decoder.configure(keys, values, surface, null, 0);  
-			Log.e("native", "-------------------------3");
-			//decoder.startCodec();
-			
-			Log.d("native", "----------------------------Finish");
-		}// end of run
-
-
-		
-		public int bytesToInt(byte[] src, int offset) 
-		{  
-		    int value;    
-		    value = (int) ((src[offset] & 0xFF)   
-		            | ((src[offset+1] & 0xFF)<<8)   
-		            | ((src[offset+2] & 0xFF)<<16)   
-		            | ((src[offset+3] & 0xFF)<<24));  
-		    return value;  
-		} 
-		
-	}// end of class
-	
-	@Override
+	@SuppressLint({ "UseValueOf", "InlinedApi" }) @Override
 	public void surfaceCreated(SurfaceHolder holder) 
 	{
 		// TODO Auto-generated method stub
@@ -151,8 +83,8 @@ public class NativeDecodeActivity extends Activity implements SurfaceHolder.Call
         Object[] values = null;
 
 
-        keys = new String[mMap.size()];
-        values = new Object[mMap.size()];
+        keys 	= new String[mMap.size()];
+        values 	= new Object[mMap.size()];
 
         int i = 0;
         for (Map.Entry<String, Object> entry: mMap.entrySet()) 
@@ -163,21 +95,19 @@ public class NativeDecodeActivity extends Activity implements SurfaceHolder.Call
         } 
         
         Log.e("native", "=========size:"+mMap.size());
-		//mCodecMedia.StartVideoSend(keys, values, holder.getSurface(), null, 0, null);
-        mCodecMedia.StartFileDecoder(keys, values, holder.getSurface(), null, 0);
+		
+        mCodecMedia.StartFileDecoder(keys, values, holder.getSurface(), null, 0, fileString);
 	}
 
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
-			int height) {
+			int height) { 
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		// TODO Auto-generated method stub
-		//mCodecMedia.StopVideoSend();
 		mCodecMedia.StopFileDecoder();
 	}
 

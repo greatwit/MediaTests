@@ -10,9 +10,10 @@
 
 package com.greatmedia;
 
-import com.greatmedia.audio.AudioWorker;
-import com.greatmedia.audio.Setting;
-import com.greatmedia.internet.NetWork;
+import com.forsafe.devicecontrol.AudioWorker;
+import com.forsafemedia.internet.NetWork;
+import com.great.happyness.Codec.Setting;
+
 import com.greatmedia.opensles.tester.CaptureTester;
 import com.greatmedia.opensles.tester.NativeAudioTester;
 import com.greatmedia.opensles.tester.PlayerTester;
@@ -43,13 +44,13 @@ public class FragmentAudioOpensl extends Fragment implements OnClickListener
     private Button openslRecvButton = null, openslSendButton = null, openslAllButton = null;
     private TextView sendTip = null, recvTip = null;
     
-    
+    private final String TAG = "FragmentAudioOpensl";
     
     
     AudioWorker mAudio   = new AudioWorker();
 	Setting mDataSetting = new Setting();
 	
-    private boolean mSending = false, mRecving = false, mAllAudio = false;
+    private boolean mSending = false, mRecving = false;
     private String mRemoteAddr  = "";
     
     
@@ -82,6 +83,10 @@ public class FragmentAudioOpensl extends Fragment implements OnClickListener
 	    openslSendButton.setOnClickListener(this);
 	    openslAllButton.setOnClickListener(this);
 
+	    mAudio.StartOpenslRecv(5010);//AudioWorker.mRecvPort 参数和NetWork.mStunPort是一样
+		byte[] id = mAudio.AudioSendMessage("120.76.204.188", 3478, true);
+		Log.w(TAG, "ID length:"+id.length);
+		
 	    return v;
   }
 
@@ -126,11 +131,10 @@ public class FragmentAudioOpensl extends Fragment implements OnClickListener
 				break;
 				
 			case R.id.openslRecvButton:
-				
 				if(mRecving)
 				{
 					mAudio.StopOpenslRecv();
-
+					
 					recvTip.setText(getResources().getString(R.string.audio_stop));
 					recvTip.setTextColor(Color.RED);
 					
@@ -154,16 +158,18 @@ public class FragmentAudioOpensl extends Fragment implements OnClickListener
 						else
 							recvPort = NetWork.mSendPort;
 					}
-					
+					recvPort += 10;
 					Log.e("MainOpenslActivity", "openslRecvButton 3 mRecvPort:" +  recvPort);
-					mAudio.StartOpenslRecv(recvPort);//AudioWorker.mRecvPort
+					//mAudio.StartOpenslRecv(recvPort);//AudioWorker.mRecvPort 参数和NetWork.mStunPort是一样
+					mAudio.StartOpenslPlay(8000, 2, 2, 512);
+					
 
+					
 					recvTip.setText(getResources().getString(R.string.audio_recving));
 					recvTip.setTextColor(Color.GREEN);
 				    
 					Log.e("MainOpenslActivity", "openslRecvButton 4 mRecvPort:" +  recvPort);
 					mRecving = true;
-
 				}
 				//mNetWork.CloseStun();
 				
@@ -195,9 +201,9 @@ public class FragmentAudioOpensl extends Fragment implements OnClickListener
 						localPort 	= Integer.parseInt(slPort);
 
 					mRemoteAddr = mDataSetting.readData(MainActivity.contx, 13);
-					Log.e("MainOpenslActivity", "mRemoteAddr: " + mRemoteAddr + " destPort:" + destPort + " localPort:"+localPort);
+					Log.e("MainOpenslActivity", "StartOpenslSend mRemoteAddr: " + mRemoteAddr + " destPort:" + destPort + " mOuterSendPort:"+NetWork.mOuterSendPort);
 					
-					mAudio.StartOpenslSend(mRemoteAddr, destPort, localPort);//AudioWorker.mRecvPort,
+					mAudio.StartOpenslSend(mRemoteAddr, destPort, NetWork.mOuterSendPort);//AudioWorker.mRecvPort,第二个参数是对方的端口号，第三个参数可以是随便定义的端口
 
 					sendTip.setText(getResources().getString(R.string.audio_sending));
 					sendTip.setTextColor(Color.GREEN);
@@ -205,10 +211,86 @@ public class FragmentAudioOpensl extends Fragment implements OnClickListener
 					
 					mSending = true;
 				}
+				
+				
+				if(mRecving)
+				{
+					mAudio.StopOpenslRecv();
+					
+					recvTip.setText(getResources().getString(R.string.audio_stop));
+					recvTip.setTextColor(Color.RED);
+					
+					mRecving = false;
+				}
+				else
+				{
+					int recvPort = 0;
+					
+					if("".equals(mDataSetting.readData(MainActivity.contx, 23)))
+						recvPort = NetWork.mRecvPort;
+					else
+					{
+						String sPort = mDataSetting.readData(MainActivity.contx, 24);
+						Log.e("MainOpenslActivity", "openslRecvButton 1 mRecvPort:" +  sPort);
+						if(sPort!=null && !"".equals(sPort))
+						{
+							Log.e("MainOpenslActivity", "openslRecvButton 2 mRecvPort:" +  sPort);
+							recvPort = Integer.parseInt(sPort);
+						}
+						else
+							recvPort = NetWork.mSendPort;
+					}
+					recvPort += 10;
+					Log.e("MainOpenslActivity", "openslRecvButton 3 mRecvPort:" +  recvPort);
+					//mAudio.StartOpenslRecv(recvPort);//AudioWorker.mRecvPort 参数和NetWork.mStunPort是一样
+					mAudio.StartOpenslPlay(8000, 2, 2, 512);
+					
 
+					
+					recvTip.setText(getResources().getString(R.string.audio_recving));
+					recvTip.setTextColor(Color.GREEN);
+				    
+					Log.e("MainOpenslActivity", "openslRecvButton 4 mRecvPort:" +  recvPort);
+					mRecving = true;
+				}
 				break;
 				
 			case R.id.openslAllButton:
+				/*
+				if(mSending && mRecving)
+				{
+					mAudio.StopOpenslTalk();
+					
+					sendTip.setText(getResources().getString(R.string.audio_stop));
+					sendTip.setTextColor(Color.RED);
+					
+					mSending = false;
+					
+					
+					recvTip.setText(getResources().getString(R.string.audio_stop));
+					recvTip.setTextColor(Color.RED);
+					
+					mRecving = false;
+				}
+				*/
+				if(mSending)
+				{ 
+					mAudio.StopOpenslSend();
+					sendTip.setText(getResources().getString(R.string.audio_stop));
+					sendTip.setTextColor(Color.RED);
+					
+					mSending = false;
+				}
+				if(mRecving)
+				{
+					mAudio.StopOpenslRecv();
+					
+					recvTip.setText(getResources().getString(R.string.audio_stop));
+					recvTip.setTextColor(Color.RED);
+					
+					mRecving = false;
+				}
+				
 				break;
 		}
 	}

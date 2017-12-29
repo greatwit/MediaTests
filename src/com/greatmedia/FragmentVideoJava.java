@@ -10,6 +10,8 @@
 
 package com.greatmedia;
 
+import com.forsafe.devicecontrol.VideoWorker;
+
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
@@ -22,12 +24,11 @@ import android.view.View.OnClickListener;
 
 import android.widget.Button;
 
-
-
 public class FragmentVideoJava extends Fragment implements OnClickListener
 {
-  private String TAG;
+  private String TAG 				= "FragmentVideoJava";
   private Button btnVideoEncode		= null, btnVideoDecode = null;
+  VideoWorker mVideo   				= new VideoWorker();
   
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -47,21 +48,27 @@ public class FragmentVideoJava extends Fragment implements OnClickListener
 
   }
 
+  
+  
 @Override
 public void onClick(View v) {
 	// TODO Auto-generated method stub
 	switch(v.getId())
 	{
 	    case R.id.btnVideoEncode:
+	    	//startActivity(new Intent().setClass(MainActivity.contx, ComDecodeActivity.class));
 	    	startActivity(new Intent().setClass(MainActivity.contx, EncodeActivity.class));//NativeDecodeActivity
-			break;
+	    	//mVideo.StartVideo();
+	    	break; 
 			
 	    case R.id.btnVideoDecode:
-	    	startActivity(new Intent().setClass(MainActivity.contx, NativeDecodeActivity.class));
+	    	startActivity(new Intent().setClass(MainActivity.contx, DecodeActivity.class));
+	    	//mVideo.StopVideo();
+	    	//mVideo.GetBuffer();
 	    	break;
-    	
 	}
 }
 
 
 }
+

@@ -40,7 +40,7 @@ public class SendEncodeActivity extends Activity implements SurfaceHolder.Callba
     private CodecMedia mCodecMedia  	=  new CodecMedia();
 
     
-    private Camera mCamera;
+    //private Camera mCamera;
     private Parameters parameters;
     
     int mFrameCount = 0;
@@ -68,8 +68,8 @@ public class SendEncodeActivity extends Activity implements SurfaceHolder.Callba
 		// TODO Auto-generated method stub
         mCodecMedia.StartCodecSend(width, height, holder.getSurface());
         
-        mCamera = getBackCamera();
-        startcamera(mCamera);
+        //mCamera = getBackCamera();
+        //startcamera(mCamera);
 	}
 
 	@Override
@@ -85,13 +85,13 @@ public class SendEncodeActivity extends Activity implements SurfaceHolder.Callba
 		// TODO Auto-generated method stub
 		//mCodecMedia.StopVideoSend();
 		
-        if (null != mCamera) 
-        {
-        	mCamera.setPreviewCallback(null);
-        	mCamera.stopPreview();
-        	mCamera.release();
-        	mCamera = null;
-        }
+//        if (null != mCamera) 
+//        {
+//        	mCamera.setPreviewCallback(null);
+//        	mCamera.stopPreview();
+//        	mCamera.release();
+//        	mCamera = null;
+//        }
 		
         mCodecMedia.StopCodecSender();
 	}
@@ -160,8 +160,8 @@ public class SendEncodeActivity extends Activity implements SurfaceHolder.Callba
 		switch(v.getId())
 		{
 		    case R.id.btEncodecStart:
-		        mCamera = getBackCamera();
-		        startcamera(mCamera);
+		        //mCamera = getBackCamera();
+		        //startcamera(mCamera);
 				break;
 		}
 	}

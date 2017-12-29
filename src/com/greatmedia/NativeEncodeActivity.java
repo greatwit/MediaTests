@@ -9,11 +9,8 @@ import java.util.Map;
 import com.great.happyness.Codec.CodecMedia;
 
 
-
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.ImageFormat;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
@@ -21,8 +18,8 @@ import android.hardware.Camera.PreviewCallback;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 
 import android.view.SurfaceHolder;
@@ -42,7 +39,7 @@ public class NativeEncodeActivity extends Activity implements SurfaceHolder.Call
 	private final int width = 1280;
 	private final int height = 720;
 	
-	private static String fileString = "/sdcard/camera.h264";
+	private static String fileString = Environment.getExternalStorageDirectory().getAbsolutePath() + "/camera.h264";//"/sdcard/camera.h264";
 	private SurfaceHolder mHolder = null;
 	
 	private Button btEncodecStart		= null;
@@ -76,7 +73,6 @@ public class NativeEncodeActivity extends Activity implements SurfaceHolder.Call
 		btEncodecStart.setOnClickListener(this);
 		
 		
-		
 		Map<String, Object> mMap = new HashMap();
 		mMap.put(KEY_MIME, "video/avc");
 		mMap.put(KEY_WIDTH, new Integer(width));
@@ -87,9 +83,6 @@ public class NativeEncodeActivity extends Activity implements SurfaceHolder.Call
 		mMap.put(MediaFormat.KEY_I_FRAME_INTERVAL, new Integer(1));
 		
 		
-
-
-
         keys = new String[mMap.size()];
         values = new Object[mMap.size()];
 
@@ -126,7 +119,7 @@ public class NativeEncodeActivity extends Activity implements SurfaceHolder.Call
 	public void surfaceCreated(SurfaceHolder holder) 
 	{
 		// TODO Auto-generated method stub
-        mCodecMedia.StartFileEncoder(keys, values, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
+        mCodecMedia.StartFileEncoder(keys, values, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE, fileString);
         
         mCamera = getBackCamera();
         startcamera(mCamera);
@@ -208,7 +201,6 @@ public class NativeEncodeActivity extends Activity implements SurfaceHolder.Call
 		// TODO Auto-generated method stub
 		switch(v.getId())
 		{
-		
 		    case R.id.btEncodecStart:
 		        mCamera = getBackCamera();
 		        startcamera(mCamera);

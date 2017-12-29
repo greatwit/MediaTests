@@ -26,6 +26,7 @@
         <activity android:name=".AudioActivity" />
         <activity android:name=".EncodeActivity" />
         <activity android:name=".DecodeActivity" />
+        <activity android:name=".ComDecodeActivity" />
         <activity android:name=".NativeDecodeActivity" />
         <activity android:name=".NativeEncodeActivity" />
         <activity android:name=".SendEncodeActivity" />
@@ -34,27 +35,27 @@
 		
     </application>
 
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" ></uses-permission>
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" ></uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" ></uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" ></uses-permission>
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
         
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
-    <uses-permission android:name="android.permission.RECORD_VIDEO"/> 
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/> 
+    <uses-permission android:name="android.permission.RECORD_VIDEO"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_OWNER_DATA" />
+    <uses-permission android:name="android.permission.WRITE_OWNER_DATA" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    
 	<uses-permission android:name="android.permission.CAMERA" /> 
     <uses-feature android:name="android.hardware.camera" /> 
     <uses-feature android:name="android.hardware.camera.autofocus" />  
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"></uses-permission>
-    <uses-permission android:name="android.permission.READ_OWNER_DATA"></uses-permission>
-    <uses-permission android:name="android.permission.WRITE_OWNER_DATA"></uses-permission>
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+
     <uses-feature android:name="android.hardware.wifi" android:required="true" />
 </manifest>
 

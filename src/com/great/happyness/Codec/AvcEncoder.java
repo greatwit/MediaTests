@@ -31,7 +31,10 @@ public class AvcEncoder
 	 
 	public byte[] configbyte; 
 
-
+	private static String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/avctest.h264";
+	private BufferedOutputStream outputStream;
+	FileOutputStream outStream;
+	
 	@SuppressLint("NewApi")
 	public AvcEncoder(int width, int height, int framerate, int bitrate) 
 	{
@@ -46,7 +49,7 @@ public class AvcEncoder
 	    mediaFormat.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 1);
 		try {
 			mediaCodec = MediaCodec.createEncoderByType("video/avc");
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -56,9 +59,7 @@ public class AvcEncoder
 	    createfile();
 	}
 	
-	private static String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/avctest.h264";
-	private BufferedOutputStream outputStream;
-	FileOutputStream outStream;
+
 	private void createfile()
 	{
 		File file = new File(path);
@@ -120,7 +121,7 @@ public class AvcEncoder
 				long pts =  0;
 				long generateIndex = 0;
 
-				ByteBuffer[] inputBuffers = mediaCodec.getInputBuffers();
+				ByteBuffer[] inputBuffers  = mediaCodec.getInputBuffers();
 				Log.e(TAG, "inputBuffers size ---------------------------"+inputBuffers.length);
 				ByteBuffer[] outputBuffers = mediaCodec.getOutputBuffers();
 				Log.e(TAG, "outputBuffers size ---------------------------"+outputBuffers.length);

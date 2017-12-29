@@ -4,13 +4,14 @@ import java.io.IOException;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import com.great.happyness.Codec.AvcEncoder;
+import com.great.happyness.Codec.GreatCamera;
+import com.great.happyness.Codec.GreatCamera.Parameters;
+import com.great.happyness.Codec.GreatCamera.PreviewCallback;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.ImageFormat;
-import android.hardware.Camera;
-import android.hardware.Camera.Parameters;
-import android.hardware.Camera.PreviewCallback;
+
 import android.media.MediaCodecInfo;
 import android.media.MediaCodecList;
 import android.os.Build;
@@ -19,7 +20,7 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-@SuppressWarnings("deprecation")
+
 public class EncodeActivity extends Activity  implements SurfaceHolder.Callback,PreviewCallback
 {
 	private String TAG = EncodeActivity.class.getSimpleName();
@@ -28,20 +29,20 @@ public class EncodeActivity extends Activity  implements SurfaceHolder.Callback,
 	
     private SurfaceHolder surfaceHolder;
 	
-	private Camera camera;
+	private GreatCamera camera;
 	
     private Parameters parameters;
     
-    int width = 1280;
-    int height = 720;
-    int framerate = 20;
-    int biterate = 8500*1000;
+    int width 		= 1280;
+    int height 		= 720;
+    int framerate 	= 20;
+    int biterate 	= 8500*1000;
     
     private static int yuvqueuesize = 10;
     
 	public static ArrayBlockingQueue<byte[]> YUVQueue = new ArrayBlockingQueue<byte[]>(yuvqueuesize); 
 	
-	private AvcEncoder avcCodec;
+	//private AvcEncoder avcCodec;
 	
 	
 	@Override
@@ -60,8 +61,8 @@ public class EncodeActivity extends Activity  implements SurfaceHolder.Callback,
     public void surfaceCreated(SurfaceHolder holder) {
         camera = getBackCamera();
         startcamera(camera);
-		avcCodec = new AvcEncoder(width, height, framerate, biterate);
-		avcCodec.StartEncoderThread();
+		//avcCodec = new AvcEncoder(width, height, framerate, biterate);
+		//avcCodec.StartEncoderThread();
     }
 
     @Override
@@ -78,16 +79,16 @@ public class EncodeActivity extends Activity  implements SurfaceHolder.Callback,
         	camera.stopPreview();
             camera.release();
             camera = null;
-            avcCodec.StopThread();
+            //avcCodec.StopThread();
         }
     }
 
 
 	@Override
-	public void onPreviewFrame(byte[] data, android.hardware.Camera camera) {
+	public void onPreviewFrame(byte[] data, com.great.happyness.Codec.GreatCamera camera) {
 		// TODO Auto-generated method stub
-		putYUVData(data, data.length); 
-		//Log.e("..", "putYUVData ---------------------------" + data.length);
+		//putYUVData(data, data.length); 
+		//Log.e(TAG, "putYUVData len:" + data.length);
 	}
 	
 	public void putYUVData(byte[] buffer, int length) {
@@ -124,21 +125,22 @@ public class EncodeActivity extends Activity  implements SurfaceHolder.Callback,
 	}
 	
 
-    private void startcamera(Camera mCamera)
+    private void startcamera(GreatCamera mCamera)
     {
         if(mCamera != null)
         {
             try {
                 mCamera.setPreviewCallback(this);
-                mCamera.setDisplayOrientation(90);
+                //mCamera.setDisplayOrientation(90);
+                
                 if(parameters == null)
-                {
                     parameters = mCamera.getParameters();
-                }
                 parameters = mCamera.getParameters();
                 parameters.setPreviewFormat(ImageFormat.NV21);
                 parameters.setPreviewSize(width, height);
+                Log.e(TAG, "parameters:" + parameters.flatten());
                 mCamera.setParameters(parameters);
+                
                 mCamera.setPreviewDisplay(surfaceHolder);
                 mCamera.startPreview();
 
@@ -148,12 +150,12 @@ public class EncodeActivity extends Activity  implements SurfaceHolder.Callback,
         }
     }
 
-	private Camera getBackCamera() 
+	private GreatCamera getBackCamera() 
 	{
-        Camera c = null;
+		GreatCamera c = null;
         try 
         {
-            c = Camera.open(0); // attempt to get a Camera instance
+            c = GreatCamera.open(0); // attempt to get a Camera instance
         } 
         catch (Exception e) 
         {

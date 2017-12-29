@@ -7,14 +7,15 @@
 
 			<SurfaceView
 	        android:id="@+id/sfv_video"
-	        android:layout_width="640dp	"
-	        android:layout_height="360dp" />
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content" />
 	
 	            <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:layout_marginTop="20dip" 
+                android:layout_marginTop="20dip"
+                android:visibility="gone"
                 >
 			    <Button
 			        android:id="@+id/btEncodecStart"

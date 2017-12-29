@@ -23,11 +23,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
+import com.forsafe.devicecontrol.VideoWorker;
 
-/**
- * @description æ’­æ”¾æœ¬åœ°H264è§†é¢‘æ–‡ä»¶
- * @time 2016/12/19 15:22 å�‚è€ƒç¿»è¯‘æ–‡æ¡£ï¼šhttp://www.cnblogs.com/Xiegg/p/3428529.html
- */
+
+
 @SuppressLint("NewApi")
 public class DecodeActivity extends Activity 
 {
@@ -38,12 +37,14 @@ public class DecodeActivity extends Activity
     private boolean mStopFlag = false;
     private DataInputStream mInputStream;
 
-    private static final int VIDEO_WIDTH = 1280;
-    private static final int VIDEO_HEIGHT = 720;
+    private static final int VIDEO_WIDTH 	= 1280;
+    private static final int VIDEO_HEIGHT 	= 720;
     private int FrameRate = 30;
     private Boolean UseSPSandPPS = false;
     private String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/avctest.h264";
 
+    VideoWorker mVideo   				= new VideoWorker();
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) 
     {
@@ -81,7 +82,7 @@ public class DecodeActivity extends Activity
 
                  try {
 					mCodec = MediaCodec.createDecoderByType("video/avc");
-				} catch (IOException e) {
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}

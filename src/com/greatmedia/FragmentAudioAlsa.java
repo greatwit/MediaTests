@@ -10,22 +10,20 @@
 
 package com.greatmedia;
 
-import com.greatmedia.audio.AudioWorker;
-import com.greatmedia.audio.Setting;
-import com.greatmedia.internet.NetWork;
+import com.forsafe.devicecontrol.AudioWorker;
+import com.forsafemedia.internet.NetWork;
+import com.great.happyness.Codec.Setting;
+
 
 import android.app.Fragment;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 
@@ -62,7 +60,7 @@ public class FragmentAudioAlsa extends Fragment implements OnClickListener
 	
 	mDataSetting.setClickSound(MainActivity.contx, false);
 	
-	mAudio.setSoundCardMode(true);
+	//mAudio.setSoundCardMode(true);
 	
     return v;
   }
@@ -91,7 +89,7 @@ public class FragmentAudioAlsa extends Fragment implements OnClickListener
 				{
 					mRemoteAddr = mDataSetting.readData(MainActivity.contx, 0);
 					
-					mAudio.StartAlsaSend(NetWork.mSendPort, mRemoteAddr.trim(), NetWork.mRecvPort);
+					mAudio.StartAlsaSend( mRemoteAddr.trim(), NetWork.mRecvPort, NetWork.mSendPort, 0);
 					/*
 					mAudio.AudioCreateSend(mSendPort);
 					mAudio.AudioConnectDest(mRemoteAddr.trim(), mRecvPort);
@@ -123,7 +121,7 @@ public class FragmentAudioAlsa extends Fragment implements OnClickListener
 				}
 				else
 				{
-					mAudio.StartAlsaRecv(NetWork.mRecvPort);
+					mAudio.StartAlsaRecv(NetWork.mRecvPort, 0);
 					/*
 					mAudio.AudioCreateRecv(mRecvPort);
 					mAudio.AudioStartRecv(1);
@@ -155,7 +153,7 @@ public class FragmentAudioAlsa extends Fragment implements OnClickListener
 				}
 				else
 				{ 
-					mAudio.StartAllAlsa( mRemoteAddr.trim(), NetWork.mRecvPort, NetWork.mSendPort);
+					mAudio.StartAllAlsa( mRemoteAddr.trim(), NetWork.mRecvPort, NetWork.mSendPort, 0);
 					/*
 					mAudio.setSoundCardMode(true);
 					
@@ -179,15 +177,11 @@ public class FragmentAudioAlsa extends Fragment implements OnClickListener
 	@Override
 	public void onDestroy() 
 	{
-		mAudio.setSoundCardMode(false);
-		mAudio.deInitSoundCard();
+		//mAudio.setSoundCardMode(false);
+		//mAudio.deInitSoundCard();
 		mDataSetting.setClickSound(MainActivity.contx, true);
 		super.onDestroy();
 	}
-	
-
-
-
 
 
 }

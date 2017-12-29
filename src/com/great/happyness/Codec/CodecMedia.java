@@ -4,10 +4,12 @@ package com.great.happyness.Codec;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.great.happyness.Codec.GreatCamera.Parameters;
 import com.greatmedia.MainActivity;
-import com.greatmedia.audio.Setting;
 
 import android.annotation.SuppressLint;
+import android.graphics.ImageFormat;
+import android.hardware.Camera;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaCrypto;
@@ -22,7 +24,7 @@ import android.view.Surface;
 public class CodecMedia 
 {
 	
-	public static short mSendPort = 9000, mRecvPort = 8000;
+	public static short mSendPort = 5008, mRecvPort = 5012;
 	
 	final String KEY_MIME 	= "mime";
     final String KEY_WIDTH 	= "width";
@@ -84,16 +86,16 @@ public class CodecMedia
 		{
 			switch(Build.VERSION.SDK_INT)
 			{
-				case Build.VERSION_CODES.JELLY_BEAN_MR1: 	//4.2, 4.2.2
-				case Build.VERSION_CODES.JELLY_BEAN_MR2: 	//4.3
-				case Build.VERSION_CODES.KITKAT:			//4.4
-				case Build.VERSION_CODES.KITKAT_WATCH:		//4.4W
-					System.loadLibrary("CodecBase");
+				case Build.VERSION_CODES.JELLY_BEAN_MR1: 	//17 4.2, 4.2.2
+				case 18: 									//18 4.3 JELLY_BEAN_MR2
+				case 19:									//19 4.4 KITKAT
+				case 20:									//20 4.4W KITKAT_WATCH
+					System.loadLibrary("CodecBase4");
 					System.loadLibrary("great_media");
 					break;
 					
-				case Build.VERSION_CODES.LOLLIPOP: 			//5.0
-				case Build.VERSION_CODES.LOLLIPOP_MR1:		//5.1
+				case 21: 									//21 5.0 LOLLIPOP
+				case 22:									//22 5.1 LOLLIPOP_MR1
 					break;
 					
 				case 23: 									//6.0
@@ -102,10 +104,14 @@ public class CodecMedia
 					break;
 					
 				case 24:									//7.0
+				case 25:									//7.1.1/7.1
+					break;
+					
+				case 26:									//8.0 O
 					break;
 					
 					default:
-						System.loadLibrary("CodecBase6");
+						System.loadLibrary("CodecBase6"); 
 						System.loadLibrary("great_media");
 						break;
 			}
@@ -118,19 +124,28 @@ public class CodecMedia
 		{ 
 			Log.e("..", "----------------2e:"+e.toString());
 		}
-
+		LoadBaseLib(Build.VERSION.SDK_INT);
 	}
-
-	public native boolean StartFileDecoder(String[] keys, Object[] values, Surface surface, MediaCrypto crypto, int flags);
+	
+	public native static boolean LoadBaseLib(int version);
+	
+	public native boolean StopVideoSend();
+	
+	
+	public native boolean StartFileDecoder(String[] keys, Object[] values, Surface surface, MediaCrypto crypto, int flags, String filepath);
 	public native boolean StopFileDecoder();
 	
-	public native boolean StartFileEncoder(String[] keys, Object[] values, Surface surface, MediaCrypto crypto, int flags);
+	public native boolean StartFileEncoder(String[] keys, Object[] values, Surface surface, MediaCrypto crypto, int flags, String filepath);
 	public native boolean StopFileEncoder();
 	public native boolean AddEncoderData(byte[] data, int len);
 	
 	
 	public native boolean StartCodecSender(String[] keys, Object[] values, Surface surface, MediaCrypto crypto, String destip, short destport, short localport, int flags);
 	public native boolean CodecSenderData(byte[] data, int len);
+	public native boolean StartCameraVideo();
+	public native boolean StopCameraVideo();
+	public native String  GetCameraParameter();
+	public native boolean SetCameraParameter(String param);
 	public native boolean StopCodecSender();
 	
 	public native boolean StartCodecRecver(String[] keys, Object[] values, Surface surface, MediaCrypto crypto, int flags, short recvport);
@@ -147,13 +162,13 @@ public class CodecMedia
 		mMap.put(MediaFormat.KEY_BIT_RATE, new Integer(width*height*5));
 		mMap.put(MediaFormat.KEY_FRAME_RATE, new Integer(20));
 		
-        String[] keys = null;
+        String[] keys 	= null;
         Object[] values = null;
 
 
         keys = new String[mMap.size()];
         values = new Object[mMap.size()];
-
+ 
         int i = 0;
         for (Map.Entry<String, Object> entry: mMap.entrySet()) 
         {
@@ -177,7 +192,7 @@ public class CodecMedia
 		mMap.put(MediaFormat.KEY_I_FRAME_INTERVAL, new Integer(2)); //i frame
 		
 		
-        String[] keys = null;
+        String[] keys 	= null;
         Object[] values = null;
 
 
@@ -193,9 +208,23 @@ public class CodecMedia
         }
         
         String remoteAddr = mDataSetting.readData(MainActivity.contx, 0);
-        Log.e("SendEncodeActivity", "mRemoteAddr: " + remoteAddr );
         
-        return StartCodecSender(keys, values, null, null, remoteAddr, CodecMedia.mRecvPort, CodecMedia.mSendPort, MediaCodec.CONFIGURE_FLAG_ENCODE);
+        remoteAddr = "192.168.43.101";
+        StartCodecSender(keys, values, surface, null, remoteAddr, CodecMedia.mRecvPort, CodecMedia.mSendPort, MediaCodec.CONFIGURE_FLAG_ENCODE);
+        
+        String param = GetCameraParameter();
+        GreatCamera p  = new GreatCamera();
+        GreatCamera.Parameters gp = p.getParameters(param);
+        gp.setPreviewFormat(ImageFormat.NV21);
+        gp.setPreviewSize(1280, 720);
+        String flatParam = gp.flatten();
+        SetCameraParameter(flatParam);
+        
+        StartCameraVideo();
+        
+        Log.e("SendEncodeActivity", "mRemoteAddr: " + remoteAddr + " camera param:"+flatParam);
+        //mCamera.setParameters(parameters);
+        return true;
 	}
 	
 }

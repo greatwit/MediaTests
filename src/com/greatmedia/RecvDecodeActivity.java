@@ -15,8 +15,8 @@ import android.view.WindowManager;
 
 public class RecvDecodeActivity extends Activity implements SurfaceHolder.Callback 
 {
-	private final int width 	= 640;
-	private final int height 	= 480;
+	private final int width 	= 1280;
+	private final int height 	= 720;
 	
 	private SurfaceHolder holder = null;
 	
