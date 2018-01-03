@@ -90,6 +90,7 @@ public class CodecMedia
 				case 18: 									//18 4.3 JELLY_BEAN_MR2
 				case 19:									//19 4.4 KITKAT
 				case 20:									//20 4.4W KITKAT_WATCH
+					System.loadLibrary("Camera4");
 					System.loadLibrary("CodecBase4");
 					System.loadLibrary("great_media");
 					break;
@@ -142,7 +143,7 @@ public class CodecMedia
 	
 	public native boolean StartCodecSender(String[] keys, Object[] values, Surface surface, MediaCrypto crypto, String destip, short destport, short localport, int flags);
 	public native boolean CodecSenderData(byte[] data, int len);
-	public native boolean StartCameraVideo();
+	public native boolean StartCameraVideo(Surface surface);
 	public native boolean StopCameraVideo();
 	public native String  GetCameraParameter();
 	public native boolean SetCameraParameter(String param);
@@ -210,7 +211,7 @@ public class CodecMedia
         String remoteAddr = mDataSetting.readData(MainActivity.contx, 0);
         
         remoteAddr = "192.168.43.101";
-        StartCodecSender(keys, values, surface, null, remoteAddr, CodecMedia.mRecvPort, CodecMedia.mSendPort, MediaCodec.CONFIGURE_FLAG_ENCODE);
+        StartCodecSender(keys, values, null, null, remoteAddr, CodecMedia.mRecvPort, CodecMedia.mSendPort, MediaCodec.CONFIGURE_FLAG_ENCODE);
         
         String param = GetCameraParameter();
         GreatCamera p  = new GreatCamera();
@@ -220,7 +221,7 @@ public class CodecMedia
         String flatParam = gp.flatten();
         SetCameraParameter(flatParam);
         
-        StartCameraVideo();
+        StartCameraVideo(surface);
         
         Log.e("SendEncodeActivity", "mRemoteAddr: " + remoteAddr + " camera param:"+flatParam);
         //mCamera.setParameters(parameters);

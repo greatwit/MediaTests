@@ -30,8 +30,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 
 
-@SuppressWarnings("deprecation")
-@SuppressLint("UseValueOf")
+
+@SuppressLint({ "UseValueOf", "InlinedApi" })
 public class NativeEncodeActivity extends Activity implements SurfaceHolder.Callback ,PreviewCallback, OnClickListener
 {
 	private String TAG = NativeEncodeActivity.class.getSimpleName();
@@ -119,7 +119,7 @@ public class NativeEncodeActivity extends Activity implements SurfaceHolder.Call
 	public void surfaceCreated(SurfaceHolder holder) 
 	{
 		// TODO Auto-generated method stub
-        mCodecMedia.StartFileEncoder(keys, values, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE, fileString);
+        mCodecMedia.StartFileEncoder(keys, values, holder.getSurface(), null, MediaCodec.CONFIGURE_FLAG_ENCODE, fileString);
         
         mCamera = getBackCamera();
         startcamera(mCamera);

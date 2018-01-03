@@ -88,7 +88,7 @@ public class EncodeActivity extends Activity  implements SurfaceHolder.Callback,
 	public void onPreviewFrame(byte[] data, com.great.happyness.Codec.GreatCamera camera) {
 		// TODO Auto-generated method stub
 		//putYUVData(data, data.length); 
-		//Log.e(TAG, "putYUVData len:" + data.length);
+		Log.e(TAG, "putYUVData len:" + data.length);
 	}
 	
 	public void putYUVData(byte[] buffer, int length) {
