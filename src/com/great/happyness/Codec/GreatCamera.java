@@ -129,17 +129,15 @@ public class GreatCamera {
 
 	static
 	{
-		Log.e(TAG, "----------------build version:"+Build.VERSION.SDK_INT);
-		try
-		{
-			System.loadLibrary("CodecBase4");
-			System.loadLibrary("great_media");
-			System.loadLibrary("stlport");
-		}
-		catch(Throwable e)
-		{ 
-			Log.e(TAG, "----------------2e:"+e.toString());
-		}
+		Log.e(TAG, "build version:"+Build.VERSION.SDK_INT);
+//		try
+//		{
+//			System.loadLibrary("GreatCamera");
+//		}
+//		catch(Throwable e)
+//		{ 
+//			Log.e(TAG, "error:"+e.toString());
+//		}
 	}
     
     // These match the enums in frameworks/base/include/camera/Camera.h

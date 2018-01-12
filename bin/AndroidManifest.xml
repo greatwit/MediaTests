@@ -27,11 +27,11 @@
         <activity android:name=".EncodeActivity" />
         <activity android:name=".DecodeActivity" />
         <activity android:name=".ComDecodeActivity" />
-        <activity android:name=".NativeDecodeActivity" />
-        <activity android:name=".NativeEncodeActivity" />
+        <activity android:name=".FileDecodeActivity" />
+        <activity android:name=".FileEncodeActivity" />
         <activity android:name=".SendEncodeActivity" />
         <activity android:name=".RecvDecodeActivity" />
-        
+        <activity android:name=".SelfCodecActivity" />
 		
     </application>
 
@@ -48,7 +48,7 @@
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     
 	<uses-permission android:name="android.permission.CAMERA" /> 
-    <uses-feature android:name="android.hardware.camera" /> 
+    <uses-feature android:name="android.hardware.camera" android:required="true"/> 
     <uses-feature android:name="android.hardware.camera.autofocus" />  
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />

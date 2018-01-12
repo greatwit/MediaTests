@@ -103,6 +103,8 @@ public final class R {
         public static final int audio_sending=0x7f06000f;
         public static final int audio_stop=0x7f06000e;
         public static final int closeser=0x7f060006;
+        public static final int file_decode=0x7f060016;
+        public static final int file_encode=0x7f060015;
         public static final int hello_world=0x7f060001;
         public static final int innernet=0x7f060007;
         public static final int ip_addr=0x7f060009;
@@ -114,10 +116,10 @@ public final class R {
         public static final int server1=0x7f060004;
         public static final int server2=0x7f060005;
         public static final int video=0x7f060014;
-        public static final int video_decode=0x7f060016;
-        public static final int video_decode_recv=0x7f060018;
-        public static final int video_encode=0x7f060015;
-        public static final int video_encode_send=0x7f060017;
+        public static final int video_decode=0x7f060018;
+        public static final int video_decode_recv=0x7f06001a;
+        public static final int video_encode=0x7f060017;
+        public static final int video_encode_send=0x7f060019;
         public static final int video_test=0x7f060013;
     }
     public static final class style {

@@ -109,11 +109,11 @@ public void onClick(View v) {
 	{
 	
 	    case R.id.btnVideoEncode:
-	    	startActivity(new Intent().setClass(MainActivity.contx, NativeEncodeActivity.class));
+	    	startActivity(new Intent().setClass(MainActivity.contx, FileEncodeActivity.class));
 			break;
 			
 	    case R.id.btnVideoDecode:
-	    	startActivity(new Intent().setClass(MainActivity.contx, NativeDecodeActivity.class));
+	    	startActivity(new Intent().setClass(MainActivity.contx, FileDecodeActivity.class));
 	    	break;
     	
 	    case R.id.btnSendEncode:

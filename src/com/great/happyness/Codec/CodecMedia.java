@@ -4,12 +4,8 @@ package com.great.happyness.Codec;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.great.happyness.Codec.GreatCamera.Parameters;
-import com.greatmedia.MainActivity;
-
 import android.annotation.SuppressLint;
 import android.graphics.ImageFormat;
-import android.hardware.Camera;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaCrypto;
@@ -19,18 +15,15 @@ import android.util.Log;
 import android.view.Surface;
 
 
-@SuppressWarnings("deprecation")
 @SuppressLint("UseValueOf")
 public class CodecMedia 
 {
-	
+	private static String TAG = CodecMedia.class.getSimpleName();
 	public static short mSendPort = 5008, mRecvPort = 5012;
 	
 	final String KEY_MIME 	= "mime";
     final String KEY_WIDTH 	= "width";
     final String KEY_HEIGHT = "height";
-    
-    Setting mDataSetting = new Setting();
     
 	public CodecMedia()
 	{
@@ -81,7 +74,7 @@ public class CodecMedia
 
 	static
 	{
-		Log.e("..", "----------------build version:"+Build.VERSION.SDK_INT);
+		Log.e(TAG, "build version:"+Build.VERSION.SDK_INT);
 		try
 		{
 			switch(Build.VERSION.SDK_INT)
@@ -100,6 +93,7 @@ public class CodecMedia
 					break;
 					
 				case 23: 									//6.0
+					System.loadLibrary("Camera6");
 					System.loadLibrary("CodecBase6");
 					System.loadLibrary("great_media");
 					break;
@@ -119,16 +113,15 @@ public class CodecMedia
 
 			System.loadLibrary("stlport");
 			
-			Log.e("..", "----------------2");
+			Log.e(TAG, "load library done");
 		}
 		catch(Throwable e)
 		{ 
-			Log.e("..", "----------------2e:"+e.toString());
+			Log.e(TAG, "load library failed error:"+e.toString());
 		}
-		LoadBaseLib(Build.VERSION.SDK_INT);
+
 	}
-	
-	public native static boolean LoadBaseLib(int version);
+
 	
 	public native boolean StopVideoSend();
 	
@@ -147,6 +140,7 @@ public class CodecMedia
 	public native boolean StopCameraVideo();
 	public native String  GetCameraParameter();
 	public native boolean SetCameraParameter(String param);
+	public native boolean SetDisplayOrientation(int value);
 	public native boolean StopCodecSender();
 	
 	public native boolean StartCodecRecver(String[] keys, Object[] values, Surface surface, MediaCrypto crypto, int flags, short recvport);
@@ -160,37 +154,37 @@ public class CodecMedia
 		mMap.put(KEY_WIDTH, new Integer(width));
 		mMap.put(KEY_HEIGHT, new Integer(height));
 		mMap.put(MediaFormat.KEY_COLOR_FORMAT, new Integer(MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420SemiPlanar));
-		mMap.put(MediaFormat.KEY_BIT_RATE, new Integer(width*height*5));
-		mMap.put(MediaFormat.KEY_FRAME_RATE, new Integer(20));
+		mMap.put(MediaFormat.KEY_BIT_RATE, 2500000);
+		mMap.put(MediaFormat.KEY_FRAME_RATE, 25);
 		
         String[] keys 	= null;
         Object[] values = null;
 
 
-        keys = new String[mMap.size()];
-        values = new Object[mMap.size()];
+        keys 	= new String[mMap.size()];
+        values 	= new Object[mMap.size()];
  
         int i = 0;
         for (Map.Entry<String, Object> entry: mMap.entrySet()) 
         {
             keys[i] = entry.getKey();
             values[i] = entry.getValue();
-            ++i;
+            ++i; 
         }
         return StartCodecRecver(keys, values, surface, null, 0, CodecMedia.mRecvPort);
 	}
 	
 	@SuppressLint("NewApi")
-	public boolean StartCodecSend(int width, int height, Surface surface)
+	public boolean StartCodecSend(String remoteAddr, int width, int height, Surface surface)
 	{
 		Map<String, Object> mMap = new HashMap();
 		mMap.put(KEY_MIME, "video/avc");
 		mMap.put(KEY_WIDTH, new Integer(width));
 		mMap.put(KEY_HEIGHT, new Integer(height));
 		mMap.put(MediaFormat.KEY_COLOR_FORMAT, new Integer(MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420SemiPlanar)); 
-		mMap.put(MediaFormat.KEY_BIT_RATE, new Integer(width*height*5));
-		mMap.put(MediaFormat.KEY_FRAME_RATE, new Integer(20));
-		mMap.put(MediaFormat.KEY_I_FRAME_INTERVAL, new Integer(2)); //i frame
+		mMap.put(MediaFormat.KEY_BIT_RATE, 2500000);
+		mMap.put(MediaFormat.KEY_FRAME_RATE, 25);
+		mMap.put(MediaFormat.KEY_I_FRAME_INTERVAL, 2); //i frame
 		
 		
         String[] keys 	= null;
@@ -208,22 +202,21 @@ public class CodecMedia
             ++i;
         }
         
-        String remoteAddr = mDataSetting.readData(MainActivity.contx, 0);
-        
-        remoteAddr = "192.168.43.101";
         StartCodecSender(keys, values, null, null, remoteAddr, CodecMedia.mRecvPort, CodecMedia.mSendPort, MediaCodec.CONFIGURE_FLAG_ENCODE);
         
         String param = GetCameraParameter();
         GreatCamera p  = new GreatCamera();
         GreatCamera.Parameters gp = p.getParameters(param);
         gp.setPreviewFormat(ImageFormat.NV21);
-        gp.setPreviewSize(1280, 720);
+        gp.setPreviewSize(width, height);
         String flatParam = gp.flatten();
         SetCameraParameter(flatParam);
-        
+        SetDisplayOrientation(90);
+//        
         StartCameraVideo(surface);
-        
+//        
         Log.e("SendEncodeActivity", "mRemoteAddr: " + remoteAddr + " camera param:"+flatParam);
+        
         //mCamera.setParameters(parameters);
         return true;
 	}

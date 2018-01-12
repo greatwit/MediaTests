@@ -1,7 +1,6 @@
 
 package com.greatmedia;
 
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,14 +29,13 @@ import android.view.WindowManager;
 import android.widget.Button;
 
 
-
 @SuppressLint({ "UseValueOf", "InlinedApi" })
-public class NativeEncodeActivity extends Activity implements SurfaceHolder.Callback ,PreviewCallback, OnClickListener
+public class FileEncodeActivity extends Activity implements SurfaceHolder.Callback ,PreviewCallback, OnClickListener
 {
-	private String TAG = NativeEncodeActivity.class.getSimpleName();
+	private String TAG = FileEncodeActivity.class.getSimpleName();
 	
-	private final int width = 1280;
-	private final int height = 720;
+	private final int width 	= 1280;//1920;//
+	private final int height 	= 720;//1080;//
 	
 	private static String fileString = Environment.getExternalStorageDirectory().getAbsolutePath() + "/camera.h264";//"/sdcard/camera.h264";
 	private SurfaceHolder mHolder = null;
@@ -80,7 +78,7 @@ public class NativeEncodeActivity extends Activity implements SurfaceHolder.Call
 		mMap.put(MediaFormat.KEY_COLOR_FORMAT, new Integer(MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420SemiPlanar)); 
 		mMap.put(MediaFormat.KEY_BIT_RATE, new Integer(width*height*5));
 		mMap.put(MediaFormat.KEY_FRAME_RATE, new Integer(20));
-		mMap.put(MediaFormat.KEY_I_FRAME_INTERVAL, new Integer(1));
+		mMap.put(MediaFormat.KEY_I_FRAME_INTERVAL, new Integer(2));
 		
 		
         keys = new String[mMap.size()];
@@ -95,8 +93,6 @@ public class NativeEncodeActivity extends Activity implements SurfaceHolder.Call
         } 
         
         Log.e("native", "=========size 1:"+mMap.size());
-
-        
 	}
 
 	class BufferInfo 
@@ -119,7 +115,7 @@ public class NativeEncodeActivity extends Activity implements SurfaceHolder.Call
 	public void surfaceCreated(SurfaceHolder holder) 
 	{
 		// TODO Auto-generated method stub
-        mCodecMedia.StartFileEncoder(keys, values, holder.getSurface(), null, MediaCodec.CONFIGURE_FLAG_ENCODE, fileString);
+        mCodecMedia.StartFileEncoder(keys, values, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE, fileString);
         
         mCamera = getBackCamera();
         startcamera(mCamera);
@@ -135,8 +131,6 @@ public class NativeEncodeActivity extends Activity implements SurfaceHolder.Call
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		// TODO Auto-generated method stub
-		//mCodecMedia.StopVideoSend();
-		
         if (null != mCamera) 
         {
         	mCamera.setPreviewCallback(null);
@@ -144,7 +138,6 @@ public class NativeEncodeActivity extends Activity implements SurfaceHolder.Call
         	mCamera.release();
         	mCamera = null;
         }
-		
 		mCodecMedia.StopFileEncoder();
 	}
 
@@ -156,13 +149,13 @@ public class NativeEncodeActivity extends Activity implements SurfaceHolder.Call
             	camera.setPreviewCallback(this);
             	camera.setDisplayOrientation(90);
                 if(parameters == null)
-                {
                     parameters = camera.getParameters();
-                }
+  
                 parameters = camera.getParameters();
                 parameters.setPreviewFormat(ImageFormat.NV21);
                 parameters.setPreviewSize(width, height);
                 camera.setParameters(parameters);
+                
                 camera.setPreviewDisplay(mHolder);
                 camera.startPreview();
 
@@ -190,9 +183,17 @@ public class NativeEncodeActivity extends Activity implements SurfaceHolder.Call
 	public void onPreviewFrame(byte[] data, Camera camera) {
 		// TODO Auto-generated method stub
 		Log.e(TAG, "camera data:" + data.length);
-		
 
-			
+		int uvlen = width*height/2;
+		int ylen  = width*height;
+		for(int i=0;i<uvlen;)
+		{
+			byte tmp = data[ylen+i];
+			data[ylen+i] = data[ylen+i+1];
+			data[ylen+i+1] = tmp;
+			i+=2;
+		}
+		
 		mCodecMedia.AddEncoderData(data, data.length);
 	}
 

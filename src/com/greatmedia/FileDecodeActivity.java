@@ -10,6 +10,7 @@ import com.great.happyness.Codec.CodecMedia;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 
+import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
 import android.os.Bundle;
 import android.os.Environment;
@@ -18,10 +19,10 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.WindowManager;
 
-public class NativeDecodeActivity extends Activity implements SurfaceHolder.Callback 
+public class FileDecodeActivity extends Activity implements SurfaceHolder.Callback 
 {
-	private final int width 	= 1280;
-	private final int height 	= 720;
+	private final int width 	= 1280;//1920;//
+	private final int height 	= 720;//1080;//
 	
 	private static String fileString = Environment.getExternalStorageDirectory().getAbsolutePath() + "/camera.h264";
 	private SurfaceHolder holder = null;
@@ -46,6 +47,7 @@ public class NativeDecodeActivity extends Activity implements SurfaceHolder.Call
 		holder.addCallback(this);
 
 		MediaFormat mediaFormat = MediaFormat.createVideoFormat("video/avc", width, height);
+		
 		mediaFormat.setInteger(MediaFormat.KEY_BIT_RATE, 2500000);
 		mediaFormat.setInteger(MediaFormat.KEY_FRAME_RATE, 20);
 		
@@ -76,6 +78,7 @@ public class NativeDecodeActivity extends Activity implements SurfaceHolder.Call
 		mMap.put(KEY_MIME, "video/avc");
 		mMap.put(KEY_WIDTH, new Integer(width));
 		mMap.put(KEY_HEIGHT, new Integer(height));
+		mMap.put(MediaFormat.KEY_COLOR_FORMAT, new Integer(MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420PackedPlanar)); 
 		mMap.put(MediaFormat.KEY_BIT_RATE, new Integer(2500000));
 		mMap.put(MediaFormat.KEY_FRAME_RATE, new Integer(20));
 		

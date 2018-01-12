@@ -13,7 +13,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.WindowManager;
 
-public class RecvDecodeActivity extends Activity implements SurfaceHolder.Callback 
+public class SelfCodecActivity extends Activity implements SurfaceHolder.Callback 
 {
 	private final int width 	= 1280;//1920;//
 	private final int height 	= 720;//1080;//
