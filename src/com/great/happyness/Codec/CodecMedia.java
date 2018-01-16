@@ -205,8 +205,8 @@ public class CodecMedia
         StartCodecSender(keys, values, null, null, remoteAddr, CodecMedia.mRecvPort, CodecMedia.mSendPort, MediaCodec.CONFIGURE_FLAG_ENCODE);
         
         String param = GetCameraParameter();
-        GreatCamera p  = new GreatCamera();
-        GreatCamera.Parameters gp = p.getParameters(param);
+        CameraParams p  = new CameraParams();
+        CameraParams.Parameters gp = p.getParameters(param);
         gp.setPreviewFormat(ImageFormat.NV21);
         gp.setPreviewSize(width, height);
         String flatParam = gp.flatten();
